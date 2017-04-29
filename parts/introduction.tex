@@ -6,11 +6,9 @@
 
 Laparoscopy is a popular \textit{minimally invasive surgery} technique in which operations are performed by inserting equipments through small incisions. Laparoscopic surgery offers advantage such as less pain and hemorrhaging, shorter recovery times over open procedures. The key equipment is a \textbf{laparoscope}, an optical imaging instrument which relays the visuals on a screen. Another main equipment is a cold light source to illuminate the area of operation.
 
-The closed nature of laparoscopy images presents some challenges. The images can get severely corrupted with specular highlights \cite{stoyanov2005removing, saint2011detection}, surgical smoke \cite{barrett2003surgical}, and noise.
+The closed nature of laparoscopy images presents some challenges. The images can get severely corrupted with specular highlights \cite{stoyanov2005removing, saint2011detection}, surgical smoke \cite{barrett2003surgical}, and noise. Specular highlights result from strong reflection of the light source by body fluids like blood and mucus. Speckles interfere with post-processing like segmentation \cite{prokopetc2015segmentation, voros2007segmentation} and tracking \cite{wolf2011tracking}. Electrical cauterization of a tissue generates surgical smoke, which hinders visibility for surgeons and robots alike. Noise is present in all optical imaging systems and a laparoscope is no exception.
 
-Specular highlights result from strong reflection of the light source by body fluids like blood and mucus. Speckles interfere with post-processing like segmentation \cite{prokopetc2015segmentation, voros2007segmentation} and tracking \cite{wolf2011tracking}. Electrical cauterization of a tissue generates surgical smoke, which hinders visibility for surgeons and robots alike. Noise is present in all optical imaging systems and a laparoscope is no exception.
-
-Our work jointly tackles the mentioned artifacts. We use probabilistic graphical models for variables in the system and formulate a unified Bayesian inference problem, which is solved using expectation-maximation (EM) algorithm. We introduce variational Bayesian approximation to overcome the analytical intractability in the optimization scheme.
+Our work jointly tackles the mentioned artifacts. We assume that the smoke color, speckle color, and location of speckles is predetermined and available for our use. Probabilistic graphical models are used variables in the system and formulate a unified Bayesian inference problem, which is solved using expectation-maximation (EM) algorithm. We introduce variational Bayesian approximation to overcome the analytical intractability in the optimization scheme.
 
 
 
