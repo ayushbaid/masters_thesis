@@ -1,0 +1,24 @@
+
+\chapter{Literature Survey}
+
+To the best of our knowledge, no existing work tackles smoke, speckles, and noise in a joint setting. We will cover these three and some related problem separately. First, we will look into specular highlights removal in laparoscopy images, which is mostly tackled as an inpainting problems. Inpainting is a process in filling in missing information, usually using true information in the surroundings. Then, we will cover dehazing, both with and without noise removal. Dehazing is haze removal in outdoor images and bears similarity with desmoking laparoscopic images. This will be followed with desmoking. We will not cover denoising as an independent domain.
+
+\section{Speckle Removal In Laparoscopy Images}
+\cite{arnold2010speckle} use a 2-step inpainting process. In the first step, they fill in the missing data by the centroid of available data within a certain distance and perform strong smoothing using a Gaussian kernel. The smooth image output of the first step and the original image is combined using a weight mask in step 2. The weight mask has high weights near the speckles and decays non-linearly with distance. This results in a gradual transition between original image and the smooth median filtered image. The results however, are smooth and lack texture. This is expected because median filtering is not suitable to interpolate texture.
+
+Isotropic color diffusion is used by \cite{saint2011detection}. They use discrete convolutions with a kernel repeatedly untill convergence is reached. \cite{stoyanov2005removing} use temporal non-rigid registration to obtain pixel values lost due to speckles. The location of speckles shift with time, and hence missing data can be interpolated by control points obtained after registration with frames captured at different instances. Both the methods perform averaging for inpainting and hence are unable to fill in texture.
+
+\section{Dehazing}
+
+
+
+
+
+
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../mainrep"
+%%% End: 
