@@ -560,9 +560,10 @@ For any suggestion/query:\par
 % Paragraph spacing
 % Line spacing (onehalfspacing is equal to baselinestretch 1.33)
 %*****************************************************************
-\parindent 5ex
+%\parindent 5ex
 %\setlength{\parskip}{1\baselineskip} 
-\renewcommand{\baselinestretch}{1.33}
+%\renewcommand{\baselinestretch}{1.33}
+
 
 
 %**************************Widow and orphan************************

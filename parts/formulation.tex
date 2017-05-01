@@ -1,0 +1,36 @@
+\chapter{Formulation}
+
+We will now model the system as well as its variables using MRFs. We will introduce priors on the variables. We will then derive the optimization objective.
+
+$X$ is an uncorrupted image instance, which we want to estimate. $Y$ is the observed image, $T$ is the smoke transmission map at hand, and $R$ is the speckle map. $K_{spec}$ and $K_{smoke}$ are speckle and smoke color respectively.
+
+\section{Image formation}
+The artifacts are captured in a 3 step fashion. In this section, $i$ denotes the pixel location. \Eqref{eqn:speckle} captures the effect of speckles using a binary speckle map $R$, where $R_i$ having a value $1$ denotes the presence of speckle. \Eqref{eqn:smokenoise} captures the smoke using smoke map $T, T_i \in [0, 1]$ and an i.i.d white Gaussian noise $n_i$ is added at each pixel.
+
+\begin{align}
+    Z_i &= (1 - R_i) X_i  + R_i K_{spec} \label{eqn:speckle} \\
+    Y_i &= T_i Z_i + (1 - T_i) K_{smoke} + \eta_i \label{eqn:smokenoise}
+\end{align}
+
+\section{Variable modeling}
+We have two variables to model: the original uncorrupted image and the smoke transmission map. They are denoted by Markov random fields (MRFs) $\mathbf{X}$ and $\mathbf{R}$ respectively. If there are $I$ pixels in the underlying image, then
+\begin{align}
+    \mathbf{X} := \lbrace X_i \rbrace_{i=1}^{I} \\
+    \mathbf{T} := \lbrace T_i \rbrace_{i=1}^{I} \\
+\end{align}
+where $X_i \in [0, 1]^3$ is a vector valued random variable denoting a value in RGB color space, and $T_i \in [0, 1]$ is a scalar random variable denoting the smoke transmission coefficient.
+
+We will now introduce the priors on $\mathbf{X}$ and $\mathbf{T}$. We want $\mathbf{X}$ to have texture to tackle the speckles, and to have high contrast to counter the smoke. We want $\mathbf{T}$ to be spatially smooth.
+
+\subsection{Sparse coding under a dictionary}
+\subsection{Image intensity prior}
+\subsubsection{KS distance}
+\subsubsection{Kernel density estimation}
+\subsection{Spatial smoothness prior}
+
+\section{MAP Estimation}
+
+\subsection{EM}
+
+\subsection{VB-EM version 1}
+\subsection{VB-EM version 2}
