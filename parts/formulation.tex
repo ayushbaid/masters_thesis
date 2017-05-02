@@ -16,16 +16,94 @@ The artifacts are captured in a 3 step fashion. In this section, $i$ denotes the
 We have two variables to model: the original uncorrupted image and the smoke transmission map. They are denoted by Markov random fields (MRFs) $\mathbf{X}$ and $\mathbf{R}$ respectively. If there are $I$ pixels in the underlying image, then
 \begin{align}
     \mathbf{X} := \lbrace X_i \rbrace_{i=1}^{I} \\
-    \mathbf{T} := \lbrace T_i \rbrace_{i=1}^{I} \\
+    \mathbf{T} := \lbrace T_i \rbrace_{i=1}^{I} 
 \end{align}
 where $X_i \in [0, 1]^3$ is a vector valued random variable denoting a value in RGB color space, and $T_i \in [0, 1]$ is a scalar random variable denoting the smoke transmission coefficient.
 
 We will now introduce the priors on $\mathbf{X}$ and $\mathbf{T}$. We want $\mathbf{X}$ to have texture to tackle the speckles, and to have high contrast to counter the smoke. We want $\mathbf{T}$ to be spatially smooth.
 
 \subsection{Sparse coding under a dictionary}
-\subsection{Image intensity prior}
-\subsubsection{KS distance}
-\subsubsection{Kernel density estimation}
+
+Given a data matrix $\mathbf{X}$, whose columns are i.i.d. random vectors, a linear decomposition is of the form 
+\begin{align}
+    \mathbf{X} \approx \mathbf{D} \mathbf{S} \label{eqn:lineardecomp}
+\end{align}
+In \Eqref{eqn:lineardecomp}, $\mathbf{D}$ is the dictionary and $\mathbf{S}$ is a code of $\mathbf{X}$.
+
+In sparse coding \cite{harpur1996sc}, we want an input vector to be using as few atoms of the dictionary as possible. A common way to enforce sparsity is regularization. $\lambda$ in \Eqref{eqn:sparsecoding} controls the tradeoff between sparseness and reconstruction accuracy. \Eqref{eqn:sparsecoding} is minimized to obtain the best linear sparse representation.
+
+\begin{align}
+    J(\mathbf{D}, \mathbf{S}) = \dfrac{1}{2} || \mathbf{X} - \mathbf{D} \mathbf{S} ||_2^2 + \lambda \sum_{ij} f(S_{ij}) \label{eqn:sparsecoding}
+\end{align}
+The sparsity function $f$ typically is strictly increasing function of the absolute value of its argument. During optimization, there is a decrease in optimization objective by simply scaling up the dictionary atoms and decreasing the value of coefficient in the code commensurately. To prevent this blowup, there is a constraint on the norm of dictionary atoms.
+
+
+Non-negative sparse coding \cite{hoyer2002nnsc} can be applied when $\mathbf{X}$ is non-negative. It constrains $\mathbf{D}$ and $\mathbf{C}$ to be non-negative. The choice of sparsity function is $f(S_{ij}) = | S_{ij} | = S_{ij}$. The main intuition behind introducing non-negative constraint is that in many data classes like images, parts combine additively to form a whole as opposed to canceling each other.
+
+\cite{mairal2009online} proposed an online algorithm for dictionary learning in the non-negative sparse coding framework. They use least angle regression to solve the sparse coding problem, given a dictionary. Their algorithm and accompanying code provide a significant speedup for learning a  dictionary on large dataset.
+
+
+
+\subsection{Image intensity distribution}
+Smoke, generally gray, damages the color in the image. We need some model distribution of colors in uncorrupted high quality images to compare our image at hand with. A distribution in the combined \textit{RGB} space is the best model but it gives rise to high complexity for its representation as no generic distribution can fit our dataset.
+
+The channels in the \textit{RGB} space exhibit very high correlation and modeling the channels independently is a poor choice. We first transform the data from \textit{RGB} space to \textit{LMS} space, as the latter is more closely related to human perception. We then calculate the eigenvectors and use them as the basis vectors for the new space, which we call \textit{l$\alpha\beta$} space. The final transformation is 
+\begin{align}
+    \begin{bmatrix}
+    l \\ \alpha \\ \beta
+    \end{bmatrix}
+    = 
+    \begin{bmatrix}
+    0.3568 & 0.8413 & 0.5304 \\
+    0.0760 & -0.2006 & 0.1239 \\
+    0.2267 & 0.3574 & -0.6512  
+    \end{bmatrix}
+    \begin{bmatrix}
+    R \\ G \\ B
+    \end{bmatrix}
+\end{align}
+
+\begin{figure}[!t]
+    \threeAcrossHeight{graphics/dist/axis_1.png}{graphics/dist/axis_2.png}{graphics/dist/axis_3.png}{0.33}
+    \caption
+    {
+        %
+        {\bf Learning Prior PDFs on Color.}
+        %
+        Empirical histograms (bar plots) and fitted parametric PDFs (solid curves) in uncorrupted laparoscopic images, for 3 channel components: {\bf
+            (a)}~gamma $\Gamma_1$, {\bf (b)}~Gaussian $G_2$, {\bf (c)}~Gaussian $G_3$.
+        %
+    }
+    \label{fig:intensity_dist}
+\end{figure}
+
+
+\subsection{KS statistic}
+Kolmogorov-Smirnov (KS) statistic is used to compare a sample with a reference probability distribution. Given an empirical cumulative distribution function (CDF) $F_{emp}$ and reference CDF $F_{ref}$, the KS distance is
+\begin{align}
+    KS(F_{emp}; F_{ref}) = \max_{x} | F_{emp}(x) - F_{ref}(x) | \label{eqn:ks_distance}
+\end{align}
+KS distance has low computational complexity but it is not differentiable. We can approximate the gradient as $F_{emp}(x) - \text{cdfmatch}(F_{emp}; F_{ref})(x)$, where cdfmatch is the CDF matching function.
+
+\subsection{Kernel density estimation}
+Kernel density estimation (KDE) is used to estimate the probability density function in a non-parametric way. Let $\left( x_1, x_2, ..., x_n\right)$ be i.i.d. samples from a distribution $f$. The kernel density estimate is
+\begin{align}
+    \hat{f}_h (x) = \frac{1}{nh} \sum_{i=1}^{n} K\left(\frac{x-x_i}{h}\right) \label{eqn:kde}
+\end{align}
+where $K(.)$ is a kernel which should take non-negative values, integrate to one, and have mean zero. $h > 0$ is the bandwidth and controls the trade-off between bias and variance of the . We will use the Gaussian kernel due to its mathematical property like differentiability. Due to our choice of Gaussian kernel, we can use the rule of thumb estimate \cite{silverman1986density} for bandwidth using the standard deviation of samples $\hat{\sigma}$. \Eqref(eqn:kdebw) is used to tune the bandwidth using training data.
+\begin{align}
+    h = \left( \frac{4 \hat{\sigma}^5}{3n}\right)^{\frac{1}{5}} \label{eqn:kdebw}
+\end{align}
+
+We will now derive the CDF estimator using the Gaussian kernel
+\begin{align}
+    \hat{f}_h (x) &= \frac{1}{nh \sqrt{2 \pi \sigma^2}} \sum_{i=1}^{n} \exp \left( -\frac{(x-x_i)^2} {2 \sigma^2 h^2}\right) \\
+    \hat{F}_h (x) &= \sum_{s=x_{min}}^{x} \hat{f}_h (s) \label{eqn:kdecdf}
+\end{align}
+
+We will quantify the difference between sample and reference CDF by sqaured difference throughout the domain.
+
+
 \subsection{Spatial smoothness prior}
 
 \section{MAP Estimation}

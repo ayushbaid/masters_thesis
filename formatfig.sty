@@ -1,0 +1,1133 @@
+
+%\include{BoxedEPS}
+%\SetOzTeXEPSFSpecial
+\newlength{\tmpLength}
+%\HideDisplacementBoxes
+
+\newcommand{\oneWidth}[3][0]{
+  \setlength{\tmpLength}{0.99\textwidth}
+  \setlength{\tmpLength}{#3\tmpLength}
+  \centerline{
+    \includegraphics[angle=#1,width=\tmpLength]{#2}
+  } % centering
+}
+
+\newcommand{\oneWidthLabel}[4][0]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{#3\tmpLength}
+  \centerline{
+    \begin{tabular}{c}
+      \includegraphics[angle=#1,width=\tmpLength]{#2} \\
+      \small \mbox{#4}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\oneHeight}[3][0]{
+  \setlength{\tmpLength}{0.9\textheight}
+  \setlength{\tmpLength}{#3\tmpLength}
+	    {
+	      \centering
+	      \includegraphics[angle=#1,height=\tmpLength]{#2}
+	    } % centering
+}
+
+\newcommand{\twoWidth}[3][0]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.5\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      &
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3} \\
+      \small \mbox{(a)}
+      &
+      &
+      \small \mbox{(b)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoHeight}[3][0]{
+  \setlength{\tmpLength}{0.95\textheight}
+  \setlength{\tmpLength}{0.28\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[angle=#1,height=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#3} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoHeightLabels}[5][0]{
+  \setlength{\tmpLength}{0.95\textheight}
+  \setlength{\tmpLength}{0.33\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[angle=#1,height=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#3} \\
+      \small \mbox{#4}
+      &
+      \small \mbox{#5}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoHeightLabelsAnother}[5][0]{
+  \setlength{\tmpLength}{0.95\textheight}
+  \setlength{\tmpLength}{0.44\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[angle=#1,height=0.9\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,height=1.2\tmpLength]{#3} \\
+      \small \mbox{#4}
+      &
+      \small \mbox{#5}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoHeightLabelsYetAnother}[5][0]{
+  \setlength{\tmpLength}{0.95\textheight}
+  \setlength{\tmpLength}{0.44\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[angle=#1,height=1.1\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,height=1.2\tmpLength]{#3} \\
+      \small \mbox{#4}
+      &
+      \small \mbox{#5}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\sixTwoAcrossTall}[7][0]{
+  \setlength{\tmpLength}{0.9\textheight}
+  \setlength{\tmpLength}{0.33\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[angle=#1,height=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#3} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)} \\
+      \includegraphics[angle=#1,height=\tmpLength]{#4}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#5} \\
+      \small \mbox{(c)}
+      &
+      \small \mbox{(d)} \\
+      \includegraphics[angle=#1,height=\tmpLength]{#6}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#7} \\
+      \small \mbox{(e)}
+      &
+      !\small \mbox{(f)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoWidthLabels}[5][0]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      \hspace{-25pt}
+      &
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3}
+      \vspace{-4pt}
+      \\
+      \small \mbox{#4}
+      \hspace{-25pt}
+      &
+      &
+      \small \mbox{#5}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoAcross}[3][0]{
+  \setlength{\tmpLength}{0.99\textwidth}
+  \setlength{\tmpLength}{0.50\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3} 
+      \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoAcrossHeight}[4][0]{
+  \setlength{\tmpLength}{0.98\textwidth}
+  \setlength{\tmpLength}{0.49\tmpLength}
+  \centerline{
+  \setlength{\tabcolsep}{0pt}
+    \begin{tabular}{cc}
+      \includegraphics[height=#4\tmpLength]{#2}
+      \hspace{-3pt}
+      \vspace{-3pt}
+      &
+      \includegraphics[height=#4\tmpLength]{#3} 
+      \vspace{-2pt}
+      \\
+      \small \mbox{(a)}
+      \hspace{-3pt}
+      &
+      \small \mbox{(b)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoAcrossLabels}[6][0]{
+  \setlength{\tmpLength}{0.49\textwidth}
+  \setlength{\tmpLength}{0.37\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[angle=#1,height=#4\tmpLength]{#2}
+      \vspace{-5pt}
+      \hspace{-13pt}
+      &
+      \includegraphics[angle=#1,height=#4\tmpLength]{#3}
+      \\
+      \small \mbox{#5}
+      \vspace{-1pt}
+      \hspace{-13pt}
+      &
+      \small \mbox{#6}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoAcrossLabelsLarger}[5][0]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.35\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3}
+      \\
+      \small \mbox{#4}
+      &
+      \small \mbox{#5}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoAcrossZoomFirst}[6]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.5\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#5}
+      &
+      \includegraphics[width=\tmpLength]{#6} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoAcrossZoomAll}[6]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.5\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#5}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#6} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)}
+    \end{tabular}
+  } % centering
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%            ACROSS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\threeAcrossZoomFirst}[7]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#5}
+      &
+      \includegraphics[width=\tmpLength]{#6}
+      &
+      \includegraphics[width=\tmpLength]{#7} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)}
+      &
+      \small \mbox{(c)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossZoomFirstHeight}[8][0]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpWidth }{0.25\tmpLength}
+  \setlength{\tmpHeight}{#8\tmpWidth}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[viewport=#1 #2 #3 #4, ,width=\tmpWidth,height=\tmpHeight]{#5}
+      &
+      \includegraphics[viewport=#1 #2 #3 #4, ,width=\tmpWidth,height=\tmpHeight]{#6} 
+      &
+      \includegraphics[viewport=#1 #2 #3 #4, ,width=\tmpWidth,height=\tmpHeight]{#7} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)}
+      &
+      \small \mbox{(c)}
+    \end{tabular}
+  } % centering 
+}
+
+
+\newcommand{\twoAcrossZoomLastLabels}[8]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.5\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[width=\tmpLength]{#5}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#6} \\
+      \small \mbox{(#7)}
+      &
+      \small \mbox{(#8)}
+    \end{tabular}
+  } % centering
+}
+
+
+\newcommand{\fourTwoAcross}[5][0]{
+  \setlength{\tmpLength}{0.48\textwidth}
+  \setlength{\tmpLength}{0.48\tmpLength}
+  \centerline{
+  \setlength{\tabcolsep}{1pt}
+    \begin{tabular}{cc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)} \\
+      \includegraphics[angle=#1,width=\tmpLength]{#4}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#5} \\
+      \small \mbox{(c)}
+      &
+      \small \mbox{(d)} 
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcross}[4][0]{
+  \setlength{\tmpLength}{0.5\textwidth}
+  \setlength{\tmpLength}{0.3\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      \hspace{-8pt}
+      \vspace{-1pt}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3} 
+      \hspace{-8pt}
+      \vspace{-1pt}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#4}
+      \vspace{-1pt} \\
+      \small \mbox{(a)}
+      \hspace{-8pt}
+      &
+      \small \mbox{(b)}
+      \hspace{-8pt}
+      &
+      \small \mbox{(c)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossHeight}[5][0]{
+  \setlength{\tmpLength}{0.5\textwidth}
+  \setlength{\tmpLength}{#5\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[angle=#1,height=\tmpLength]{#2}
+      \vspace{-5pt}
+      \hspace{-13pt}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#3} 
+      \hspace{-13pt}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#4}
+      \\
+      \small \mbox{(a)}
+      \hspace{-13pt}
+      &
+      \small \mbox{(b)}
+      \hspace{-13pt}
+      &
+      \small \mbox{(c)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossZoomAllABC}[7]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#5}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#6}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#7} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)}
+      &
+      \small \mbox{(c)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossZoomAllDEF}[7]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#5}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#6}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#7} \\
+      \small \mbox{(d)}
+      &
+      \small \mbox{(e)}
+      &
+      \small \mbox{(f)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossZoomAllGHI}[7]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#5}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#6}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#7} \\
+      \small \mbox{(g)}
+      &
+      \small \mbox{(h)}
+      &
+      \small \mbox{(i)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossZoomLastTwoABC}[9]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[width=\tmpLength]{#9}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#9}
+      &
+      \includegraphics*[viewport=#5 #6 #7 #8, width=\tmpLength]{#9} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)}
+      &
+      \small \mbox{(c)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossZoomLastTwoDEF}[9]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[width=\tmpLength]{#9}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#9}
+      &
+      \includegraphics*[viewport=#5 #6 #7 #8, width=\tmpLength]{#9} \\
+      \small \mbox{(d)}
+      &
+      \small \mbox{(e)}
+      &
+      \small \mbox{(f)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossZoomLastABC}[7]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[width=\tmpLength]{#5}
+      &
+      \includegraphics[width=\tmpLength]{#6}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#7} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)}
+      &
+      \small \mbox{(c)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossZoomLastDEF}[7]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[width=\tmpLength]{#5}
+      &
+      \includegraphics[width=\tmpLength]{#6}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#7} \\
+      \small \mbox{(d)}
+      &
+      \small \mbox{(e)}
+      &
+      \small \mbox{(f)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossLabels}[8][0]{
+  \setlength{\tmpLength}{0.49\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[angle=#1,height=#5\tmpLength]{#2}
+      \hspace{-16pt}
+      \vspace{-5pt}
+      &
+      \includegraphics[angle=#1,height=#5\tmpLength]{#3} 
+      \hspace{-13pt}
+      &
+      \includegraphics[angle=#1,height=#5\tmpLength]{#4} \\
+      \small \mbox{#6}
+      \vspace{-1pt}
+      \hspace{-16pt}
+      &
+      \small \mbox{#7}
+      \hspace{-13pt}
+      &
+      \small \mbox{#8}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossLabelsSmaller}[7][0]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.30\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#4} \\
+      \small \mbox{#5}
+      &
+      \small \mbox{#6}
+      &
+      \small \mbox{#7}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeAcrossLabelsSmall}[7][0]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.26\tmpLength}
+  \centerline{
+    \begin{tabular}{ccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3} 
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#4} \\
+      \small \mbox{#5}
+      &
+      \small \mbox{#6}
+      &
+      \small \mbox{#7}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\fourAcross}[5][0]{
+  \setlength{\tmpLength}{0.50\textwidth}
+  \setlength{\tmpLength}{0.26\tmpLength}
+  \centerline{
+    \begin{tabular}{cccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      \vspace{-5pt}
+      \hspace{-14pt}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3} 
+      \hspace{-14pt}
+      &
+      \includegraphics[angle=#1,width=0.5\tmpLength]{#4} 
+      \hspace{-14pt}
+      &
+      \includegraphics[angle=#1,width=1.18\tmpLength]{#5}
+      \\
+      \small \mbox{(a)}
+      \hspace{-14pt}
+      &
+      \small \mbox{(b)}
+      \hspace{-14pt}
+      &
+      \small \mbox{(c)}
+      \hspace{-14pt}
+      &
+      \small \mbox{(d)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\fourAcrossNoLabels}[5][0]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.24\tmpLength}
+  \centerline{
+    \begin{tabular}{cccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3} 
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#4} 
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#5} \\
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\fourAcrossLabels}[9][0]{
+  \setlength{\tmpLength}{0.99\textwidth}
+  \setlength{\tmpLength}{0.245\tmpLength}
+  \centerline{
+    \begin{tabular}{cccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      \vspace{-1pt}
+      \hspace{-12pt}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3} 
+      \vspace{-1pt}
+      \hspace{-12pt}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#4}
+      \vspace{-1pt}
+      \hspace{-12pt}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#5}
+      \vspace{-1pt} \\
+      \small \mbox{#6}
+      \hspace{-12pt}
+      &
+      \small \mbox{#7}
+      \hspace{-12pt}
+      &
+      \small \mbox{#8}
+      \hspace{-12pt}
+      &
+      \small \mbox{#9}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\fourAcrossLabelsHeight}[9]{
+  \setlength{\tmpLength}{0.97\textwidth}
+  \setlength{\tmpLength}{0.24\tmpLength}
+  \centerline{
+    \begin{tabular}{cccc}
+      \includegraphics[height=#9\tmpLength]{#1}
+      \vspace{-1pt}
+      \hspace{-13.5pt}
+      &
+      \includegraphics[height=#9\tmpLength]{#2}
+      \vspace{-1pt}
+      \hspace{-13.5pt}
+      &
+      \includegraphics[height=#9\tmpLength]{#3}
+      \vspace{-1pt}
+      \hspace{-13.5pt}
+      &
+      \includegraphics[height=#9\tmpLength]{#4}
+      \vspace{-1pt} \\
+      \small \mbox{#5}
+      \hspace{-13.5pt}
+      &
+      \small \mbox{#6}
+      \hspace{-13.5pt}
+      &
+      \small \mbox{#7}
+      \hspace{-13.5pt}
+      &
+      \small \mbox{#8}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\fourAcrossLabelsHeightBigSmall}[9]{
+  \setlength{\tmpLength}{0.97\textwidth}
+  \setlength{\tmpLength}{0.24\tmpLength}
+  \setlength{\tmpLength}{#9\tmpLength}
+  \centerline{
+    \begin{tabular}{cccc}
+      \includegraphics[height=1.0\tmpLength]{#1}
+      \vspace{-1pt}
+      \hspace{-13.5pt}
+      &
+      \includegraphics[height=0.5\tmpLength]{#2}
+      \vspace{-1pt}
+      \hspace{-13.5pt}
+      &
+      \includegraphics[height=1.0\tmpLength]{#3}
+      \vspace{-1pt}
+      \hspace{-13.5pt}
+      &
+      \includegraphics[height=0.5\tmpLength]{#4}
+      \vspace{-1pt} \\
+      \small \mbox{#5}
+      \hspace{-13.5pt}
+      &
+      \small \mbox{#6}
+      \hspace{-13.5pt}
+      &
+      \small \mbox{#7}
+      \hspace{-13.5pt}
+      &
+      \small \mbox{#8}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\fourAcrossLabelsSmaller}[9][0]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.21\tmpLength}
+  \centerline{
+    \begin{tabular}{cccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3} 
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#4} 
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#5} \\
+      \small \mbox{#6}
+      &
+      \small \mbox{#7}
+      &
+      \small \mbox{#8}
+      &
+      \small \mbox{#9}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\fourAcrossLabelsSpace}[9][0]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.225\tmpLength}
+  \centerline{
+    \begin{tabular}{cccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3}
+      \hspace {15 pt}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#4}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#5} \\
+      \small \mbox{#6}
+      &
+      \small \mbox{#7}
+      \hspace {15 pt}
+      &
+      \small \mbox{#8}
+      &
+      \small \mbox{#9}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\fourAcrossZoomFirst}[8]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.22\tmpLength}
+  \centerline{
+    \begin{tabular}{cccc}
+      \includegraphics*[viewport=#1 #2 #3 #4, width=\tmpLength]{#5}
+      &
+      \includegraphics[width=\tmpLength]{#6}
+      &
+      \includegraphics[width=\tmpLength]{#7}
+      &
+      \includegraphics[width=\tmpLength]{#8} \\
+      \small \mbox{(a)}
+      &
+      \small \mbox{(b)}
+      &
+      \small \mbox{(c)}
+      &
+      \small \mbox{(d)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\fiveAcross}[6][0]{
+  \setlength{\tmpLength}{0.49\textwidth}
+  \setlength{\tmpLength}{0.23\tmpLength}
+  \centerline{
+    \begin{tabular}{ccccc}
+      \includegraphics[angle=#1,width=\tmpLength]{#2}
+      \vspace{-4pt}
+      \hspace{-14pt}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#3}
+      \hspace{-14pt}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#4}
+      \hspace{-14pt}
+      &
+      \includegraphics[angle=#1,width=0.25\tmpLength]{#5}
+      \hspace{-14pt}
+      &
+      \includegraphics[angle=#1,width=\tmpLength]{#6}
+      \\
+      \small \mbox{(a)}
+      \vspace{-4pt}
+      \hspace{-14pt}
+      &
+      \small \mbox{(b)}
+      \hspace{-14pt}
+      &
+      \small \mbox{(c)}
+      \hspace{-14pt}
+      &
+      \small \mbox{(d)}
+      \hspace{-14pt}
+      &
+      \small \mbox{(e)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\fiveAcrossHeight}[7][0]{
+  \setlength{\tmpLength}{0.99\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
+  \setlength{\tmpLength}{#7\tmpLength}
+  \centerline{
+    \begin{tabular}{ccccc}
+      \includegraphics[angle=#1,height=\tmpLength]{#2}
+      \vspace{-1pt}
+      \hspace{-13.5pt}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#3}
+      \vspace{-1pt}
+      \hspace{-13.5pt}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#4}
+      \vspace{-1pt}
+      \hspace{-13.5pt}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#5}
+      \vspace{-1pt}
+      \hspace{-13.5pt}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#6}
+      \vspace{-1pt} \\
+      \small \mbox{(a)}
+      \hspace{-13.5pt}
+      &
+      \small \mbox{(b)}
+      \hspace{-13.5pt}
+      &
+      \small \mbox{(c)}
+      \hspace{-13.5pt}
+      &
+      \small \mbox{(d)}
+      \hspace{-13.5pt}
+      &
+      \small \mbox{(e)}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\sixAcrossHeight}[7]{
+  \setlength{\tmpLength}{0.98\textwidth}
+  \setlength{\tmpLength}{0.165\tmpLength}
+  \centerline{
+    \begin{tabular}{cccccc}
+      \includegraphics[height=#7\tmpLength]{#1}
+      \vspace{-0.5pt}
+      \hspace{-12pt}
+      &
+      \includegraphics[height=#7\tmpLength]{#2}
+      \vspace{-0.5pt}
+      \hspace{-12pt}
+      &
+      \includegraphics[height=#7\tmpLength]{#3}
+      \vspace{-0.5pt}
+      \hspace{-12pt}
+      &
+      \includegraphics[height=#7\tmpLength]{#4}
+      \vspace{-0.5pt}
+      \hspace{-12pt}
+      &
+      \includegraphics[height=#7\tmpLength]{#5}
+      \vspace{-0.5pt}
+      \hspace{-12pt}
+      &
+      \includegraphics[height=#7\tmpLength]{#6}
+      \vspace{-1pt} % \\
+      % \small \mbox{(a)}
+      % \vspace{-1pt}
+      % \hspace{-12pt}
+      % &
+      % \small \mbox{(b)}
+      % \vspace{-1pt}
+      % \hspace{-12pt}
+      % &
+      % \small \mbox{(c)}
+      % \vspace{-1pt}
+      % \hspace{-12pt}
+      % &
+      % \small \mbox{(d)}
+      % \vspace{-1pt}
+      % \hspace{-12pt}
+      % &
+      % \small \mbox{(e)}
+      % \vspace{-1pt}
+      % \hspace{-12pt}
+      % &
+      % \small \mbox{(f)}
+      % \vspace{-1pt}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\sixAcrossHeightAnother}[7][0]{
+  \setlength{\tmpLength}{0.98\textwidth}
+  \setlength{\tmpLength}{0.1575\tmpLength}
+  \centerline{
+    \begin{tabular}{cccccc}
+      \includegraphics[angle=#1,height=\tmpLength]{#2}
+      \vspace{-0.5pt}
+      \hspace{-4pt}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#3}
+      \vspace{-0.5pt}
+      \hspace{-4pt}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#4}
+      \vspace{-0.5pt}
+      \hspace{-4pt}
+      &
+      \includegraphics[angle=#1,height=\tmpLength]{#5}
+      \vspace{-0.5pt}
+      \hspace{-4pt}
+      &
+      \includegraphics[angle=#1,height=0.9\tmpLength]{#6}
+      \vspace{-0.5pt}
+      \hspace{-4pt}
+      &
+      \includegraphics[angle=#1,height=1.2\tmpLength]{#7}
+      \vspace{-1pt} \\
+      \small \mbox{(f)}
+      \vspace{-1pt}
+      \hspace{-4pt}
+      &
+      \small \mbox{(g)}
+      \vspace{-1pt}
+      \hspace{-4pt}
+      &
+      \small \mbox{(h)}
+      \vspace{-1pt}
+      \hspace{-4pt}
+      &
+      \small \mbox{(i)}
+      \vspace{-1pt}
+      \hspace{-4pt}
+      &
+      \small \mbox{(j)}
+      \vspace{-1pt}
+      \hspace{-4pt}
+      &
+      \small \mbox{(k)}
+      \vspace{-1pt}
+    \end{tabular}
+  } % centering
+}
+
+%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\threeDownTwoColumns}[6]{
+  \setlength{\tmpLength}{0.50\textwidth}
+  \setlength{\tmpLength}{0.50\tmpLength}
+    \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[width=\tmpLength]{#1}
+      \vspace{-2pt}
+      &
+      \includegraphics[width=\tmpLength]{#2}
+      \vspace{-2pt} \\
+      \small \mbox{(a)}
+      &	
+      \small \mbox{(b)} \\
+      \includegraphics[width=\tmpLength]{#3}
+      \vspace{-2pt}
+      &
+      \includegraphics[width=\tmpLength]{#4} \\
+      \small \mbox{(c)}
+      &
+      \small \mbox{(d)} \\
+      \includegraphics[width=\tmpLength]{#5}
+      \vspace{-2pt}
+      &
+      \includegraphics[width=\tmpLength]{#6} \\
+      \small \mbox{(e)}
+      &
+      \small \mbox{(f)}
+    \end{tabular}
+    } % centering
+}
+
+\newcommand{\oneAcrossTwoColumnsLabel}[2]{
+  \setlength{\tmpLength}{0.45\textwidth}
+  \setlength{\tmpLength}{0.50\tmpLength}
+  \centerline{
+    \begin{tabular}{c}
+      \includegraphics[width=\tmpLength]{#1} \\
+      \small \mbox{#2}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoAcrossTwoColumnsLabels}[4]{
+  \setlength{\tmpLength}{0.50\textwidth}
+  \setlength{\tmpLength}{0.50\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[width=\tmpLength]{#1}
+      &
+      \includegraphics[width=\tmpLength]{#2} \\
+      \small \mbox{#3}
+      &
+      \small \mbox{#4}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoAcrossTwoColumnsLabelsZoom}[8]{
+  \setlength{\tmpLength}{0.45\textwidth}
+  \setlength{\tmpLength}{0.50\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics*[viewport=#1 #2 #3 #4,width=\tmpLength]{#5}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4,width=\tmpLength]{#6} \\
+      \small \mbox{#7}
+      &
+      \small \mbox{#8}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\twoAcrossTwoColumnsLabelsZoomLast}[8]{
+  \setlength{\tmpLength}{0.45\textwidth}
+  \setlength{\tmpLength}{0.50\tmpLength}
+  \centerline{
+    \begin{tabular}{cc}
+      \includegraphics[width=\tmpLength]{#5}
+      &
+      \includegraphics*[viewport=#1 #2 #3 #4,width=\tmpLength]{#6} \\
+      \small \mbox{#7}
+      &
+      \small \mbox{#8}
+    \end{tabular}
+  } % centering
+}
+
+\newcommand{\threeDownThreeColumns}[9]{
+  \setlength{\tmpLength}{0.33\textwidth}
+  \setlength{\tmpLength}{0.4\tmpLength}
+    \centerline{
+    \setlength{\tabcolsep}{1pt}
+    \begin{tabular}{ccc}
+      \includegraphics[width=\tmpLength]{#1}
+      \hspace{-6pt}
+      \vspace{-5pt}
+      &
+      \includegraphics[width=\tmpLength]{#2} 
+      \hspace{-3pt}
+      &
+      \includegraphics[width=\tmpLength]{#3} \\
+      \small \mbox{(a)}
+      & 
+      \small \mbox{(b)} 
+      & 
+      \small \mbox{(c)} \\
+      \includegraphics[width=\tmpLength]{#4}
+      \hspace{-6pt}
+      \vspace{-5pt}
+      &
+      \includegraphics[width=\tmpLength]{#5} 
+      \hspace{-3pt}
+      &
+      \includegraphics[width=\tmpLength]{#6} \\
+      \small \mbox{(d)}
+      &
+      \small \mbox{(e)} 
+      & 
+      \small \mbox{(f)} \\
+      \includegraphics[width=\tmpLength]{#7}
+      \hspace{-6pt}
+      \vspace{-5pt}
+      &
+      \includegraphics[width=\tmpLength]{#8} 
+      \hspace{-3pt}
+      &
+      \includegraphics[width=\tmpLength]{#9} \\
+      \small \mbox{(g)}
+      &
+      \small \mbox{(h)}
+      & 
+      \small \mbox{(i)} 
+    \end{tabular}
+    } % centering
+}
