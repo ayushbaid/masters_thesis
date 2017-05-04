@@ -1,0 +1,91 @@
+\chapter{Estimation}
+
+For our algorithm, we assume that we are provided with speckle label map $R$, speckle color $K_{spec}$, and smoke color $K_{smoke}$. We will use maximum a posteriori probability (MAP) estimation for image $\mathbf{X}$.
+
+\begin{align}
+\hat{\mathbf{x}} &= \argmax_\mathbf{x} P ( \mathbf{x} | \mathbf{y}, r) = \argmax_\mathbf{x} P(\mathbf{y} | \mathbf{x}, r) P( \mathbf{x} ) \label{eqn:simplemap}
+\end{align}
+
+The first part of the final term in \Eqref{eqn:simplemap} is the likelihood of observing the output $\mathbf{y}$. The second part is the prior probability of $\mathbf{x}$.
+
+\section{EM}
+% TODO
+
+\section{VB-EM version 1}
+We will introduce smoke transmission map $\mathbf{T}$ as a hidden variable, and will treat the dictionary representation codes $\mathbf{S}$ as a part of optimization on $\mathbf{X}$ and not as a variable in our system.
+
+The function to be maximized is
+\begin{align}
+P(\mathbf{y} | \mathbf{x}, r) P( \mathbf{x} ) &= \int_{\mathbf{t}} P(\mathbf{y}, \mathbf{t}| \mathbf{x}, r) P( \mathbf{x} ) d\mathbf{t}\nonumber \\
+&= \int_{\mathbf{t}} P(\mathbf{y}| \mathbf{x}, \mathbf{t}, r) P( \mathbf{x} ) P( \mathbf{t} ) d\mathbf{t} \label{eqn:mapvbem1}
+\end{align}
+The final term in \Eqref{eqn:mapvbem1} has three components. The first one is the likelihood of the output being observed. The second component is prior on $\mathbf{X}$ which will be defined shortly, and the third one is the smoothness prior on $\mathbf{T}$ [\Eqref{eqn:spatialsmoothness}].
+
+Due to our modeling of the noise as i.i.d. Gaussian, the likelihood probability distribution turns out to be
+\begin{align}
+P(\mathbf{y}| \mathbf{x}, \mathbf{t}, r) &= \sum_i \left(  y_i - w_i \right)^2 \\
+w_i &= t_i (1-r_i) x_i + t_i r_i K_{spec} + (1-t_i) K_{smoke} 
+\end{align}
+
+For $\mathbf{X}$, we use the non-negative sparse coding prior [\Eqref{eqn:sparsecoding}] and KS statistic prior [\Eqref{eqn:cost_ks}] for color. The prior distribution on $\mathbf{X}$ is
+\begin{align}
+P(\mathbf{X}) = \dfrac{1}{Z} \exp \left( - \gamma_1 \sum_{i=1}^{I} \left( \min_{S_i} || \mathbf{X}_i^m - \mathbf{D} S_i ||_2^2 + \lambda || S_i ||_1 \right) - \gamma_2 J_{KDE} \left( \mathbf{X} \right) \right)
+\end{align}
+where $Z$ is the normalization constant, and $\gamma_1, \gamma_2$ are weights to adjust the effect of two components of the prior.
+
+\subsection{E step}
+Let $\mathbf{x}^n$ be the estimate of the uncorrupted image after $n$ iterations. The $Q$ function in the next iteration is
+\begin{align}
+Q(\mathbf{x}; \mathbf{x}^n) &= \mathbb{E}_{P( \mathbf{T} | \mathbf{y}, \mathbf{x^n})} \left[ \log P \left( \mathbf{y}, \mathbf{T}, \mathbf{x} | \mathbf{r} \right) \right] = \mathbb{E}_{P( \mathbf{T} | \mathbf{y}, \mathbf{x^n})} \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + \log P(\mathbf{X}) \label{eqn:Qvbem1} 
+\end{align}
+
+% TODO: introduce VB
+The expectation is analytically intractable to compute. Hence, we approximate the posterior probability of latent variable by using a variational factorization over each pixel.
+
+\begin{align}
+    P(\mathbf{T} | \mathbf{y}, \mathbf{x}^n) &= \prod_{i=1}^{I} F_i (T_i | \mathbf{y}, \mathbf{x}^n) \label{eqn:factvbem1}
+\end{align}
+where $F_i$ is the factor for pixel $i$. $\lbrace F_i \rbrace$ are truncated Gaussians with support $\left[0, 1 \right]$, means $\lbrace mu_i \rbrace$,  standard deviations $\lbrace \sigma_i \rbrace$. We have to optimize the factorization before solving for the $Q$ function. \Eqref{eqn:solvefactvbem1} is solved pixel-wise for optimum factors $ \lbrace F_i^* \rbrace $ until convergence for all the factors. $c$ is an additive constant which will be absorbed in normalization of factor distributions.
+\begin{align}
+    \log F_i^* (T_i) = \mathbb{E}_{ \prod_{j \neq i} F_j \left( T_j | \mathbf{y}, \mathbf{x}^n \right) } \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + c \label{eqn:solvefactvbem1}
+\end{align}
+
+We will now derive the parameters of optimum factorization. We will use $z_i$ is as defined in \Eqref{eqn:speckle} to simplify the notation.
+\begin{align}
+    \begin{split}
+    \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) = - \sum_{i} &\left( y_i - T_i z_i - (1-T_i) K_{smoke} \right)^2 \\ &- \gamma_3 \sum_{i} \sum_{j \in \mathcal{N}_i^T}  w_{ij}^T (T_i - T_j)^2
+    \end{split}
+    \label{eqn:derive_1_factvbem1}
+\end{align}
+To solve \Eqref{eqn:solvefactvbem1}, we replace $ \lbrace T_j | j \neq i \rbrace $ with current optimum means $ \lbrace \mu_j \rbrace$ and $ \lbrace T_j^2 | j \neq i \rbrace $ with $ \lbrace \mu_j^2 + \sigma_j^2 \rbrace $ in \Eqref{eqn:derive_1_factvbem1}. This will result in a quadratic equation in $T_i$, from which the parameters $ \left( \mu_i, \sigma_i \right) $ of Gaussian factor $F_i$ can be solved for. The final solution is derived as
+\begin{align}
+    \bar{\mu}_i &= \frac{ \left( y_i - K_{smoke} \right) \left( z_i - K_{smoke} \right) + 2 \gamma_3 \sum_{ j \in \mathcal{N}_i^T } w_{ij}^T \mu_j } { \left( z_i - K_{smoke} \right)^2 + 2 \gamma_3 \sum_{ j \in \mathcal{N}_i^T } w_{ij}^T } \\
+    \bar{\sigma}_i &= \frac{ 1 } { \sqrt{2} }\left( \left( z_i - K_{smoke} \right)^2 + 2 \gamma_3 \sum_{ j \in \mathcal{N}_i^T } w_{ij}^T \right)^{-\frac{1}{2}}  \\
+    \alpha_i &= -\frac{\bar\mu_i}{\bar\sigma_i} \\
+    \beta_i &= \frac{1-\bar\mu_i}{\bar\sigma_i} \\
+    \mu_i &= \bar\mu_i + \bar\sigma_i \frac{\phi\left(\alpha_i \right) - \phi\left(\beta_i \right)}{\Phi\left(\beta_i \right) - \Phi\left(\alpha_i \right)} \label{eqn:mean_t_vbem1} \\
+    \sigma_i &= \bar\sigma_i^2 \left[ 1 + \frac{\alpha_i \phi\left(\alpha_i \right) - \beta_i  \phi\left(\beta_i \right)}{\Phi\left(\beta_i \right) - \Phi\left(\alpha_i \right)} - \left(\frac{\phi\left(\alpha_i \right) - \phi\left(\beta_i \right)}{\Phi\left(\beta_i \right) - \Phi\left(\alpha_i \right)} \right)^2 \right] \label{eqn:std_t_vbem1}  
+\end{align}
+where $\phi$ and $\Phi$ are PDF and CDF of standard normal distribution. 
+
+Once we have the optimum factorization, solving for the $Q$ function becomes simple.
+\begin{align}
+    \mathbb{E}_{P( \mathbf{T} | \mathbf{y}, \mathbf{x^n})} \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] &= \mathbb{E}_{ \prod_{i=1}^{I} F_i (T_i | \mathbf{y}, \mathbf{x}^n) } \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] \label{eqn:Qsimplevbem1}
+\end{align}
+\Eqref{eqn:Qsimplevbem1} can be solved by making the following substitutions in \Eqref{eqn:derive_1_factvbem1}:
+\begin{itemize}
+    \item $\mu_i$ for $T_i$
+    \item $\mu_i^2 + \sigma_i^2$ for $T_i^2$
+    \item $\mu_i \mu_j$ for $T_i T_j$ 
+\end{itemize}
+
+
+\subsection{M step}
+In this step, we will maximize $Q(\mathbf{x}; \mathbf{x}^n)$ with respect to $\mathbf{x}$ to obtain a new estimate $\mathbf{x}^{n+1}$.
+\begin{align}
+    \mathbf{x}^{n+1} &= \argmax_{x} Q \left( \mathbf{x}; \mathbf{x}^{n+1} \right) \label{eqn:Mvbem1}
+\end{align}
+
+There is an inherent minimization with respect to dictionary codes $S$ involved in the prior $ P \left(\mathbf{X}\right) $. \Eqref{eqn:Mvbem1} is optimized alternatively for $\mathbf{X}$ and $S$ until convergence. The algorithm for optimization over a variable is adaptive gradient descent.
+
+\section{VB-EM version 2}

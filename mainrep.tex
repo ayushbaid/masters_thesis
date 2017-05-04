@@ -16,6 +16,7 @@
     parts/introduction,
     parts/literature,
     parts/formulation,
+    parts/estimation,
     parts/results, 
     dec,pub,ack
 }
@@ -32,6 +33,7 @@
 \usepackage{setspace}
 
 
+
 %%% Macro definitions for Commonly used symbols
 \newcommand{\Rey}{\ensuremath{\mathrm{Re}}}
 \newcommand{\avg}[1]{\ensuremath{\overline{#1}}}
@@ -43,6 +45,11 @@
 \newcommand{\Tabref}[1]{Table~\ref{#1}}
 \newcommand{\Figref}[1]{Figure~\ref{#1}}
 \newcommand{\Appref}[1]{Appendix~\ref{#1}}
+\newcommand{\Secref}[1]{Section~\ref{#1}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
 
 \setstretch{1.5}
 \begin{document}
@@ -153,6 +160,7 @@
 \include{parts/introduction}
 \include{parts/literature}
 \include{parts/formulation}
+\include{parts/estimation}
 \include{parts/results}
 
 %****************************************************************

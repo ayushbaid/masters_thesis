@@ -101,8 +101,13 @@
             linkbordercolor={1 0 1},%
 	        pdfusetitle]
             {hyperref}
+ 
+%\renewcommand{\sfdefault}{ptm}
+%\renewcommand{\rmdefault}{ptm}
+%\renewcommand{\ttdefault}{ptm}       
 
-\RequirePackage[varg]{txfonts}
+\usepackage{newtxtext}
+%\RequirePackage[varg]{txfonts}
 \RequirePackage{graphicx}
 \newcommand{\putiitblogo}{\includegraphics[width=10em]{iitb-black}}
 
