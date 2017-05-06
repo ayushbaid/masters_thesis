@@ -194,25 +194,26 @@
   } % centering
 }
 
-\newcommand{\twoAcrossLabels}[6][0]{
-  \setlength{\tmpLength}{0.49\textwidth}
-  \setlength{\tmpLength}{0.37\tmpLength}
+\newcommand{\twoAcrossForThree}[6]{
+  \setlength{\tmpLength}{0.95\textwidth}
+  \setlength{\tmpLength}{0.25\tmpLength}
   \centerline{
     \begin{tabular}{cc}
       \includegraphics[angle=#1,height=#4\tmpLength]{#2}
-      \vspace{-5pt}
       \hspace{-13pt}
+      \vspace{-5pt}
       &
-      \includegraphics[angle=#1,height=#4\tmpLength]{#3}
+      \includegraphics[angle=#1,height=#4\tmpLength]{#3} 
       \\
       \small \mbox{#5}
       \vspace{-1pt}
       \hspace{-13pt}
       &
       \small \mbox{#6}
-    \end{tabular}
+      \end{tabular}
   } % centering
 }
+
 
 \newcommand{\twoAcrossLabelsLarger}[5][0]{
   \setlength{\tmpLength}{0.95\textwidth}
@@ -527,8 +528,8 @@
 }
 
 \newcommand{\threeAcrossLabels}[8][0]{
-  \setlength{\tmpLength}{0.49\textwidth}
-  \setlength{\tmpLength}{0.25\tmpLength}
+    \setlength{\tmpLength}{0.95\textwidth}
+    \setlength{\tmpLength}{0.25\tmpLength}
   \centerline{
     \begin{tabular}{ccc}
       \includegraphics[angle=#1,height=#5\tmpLength]{#2}
@@ -550,6 +551,27 @@
     \end{tabular}
   } % centering
 }
+
+\newcommand{\twoForThree}[6][0]{
+    \setlength{\tmpLength}{0.95\textwidth}
+    \setlength{\tmpLength}{0.25\tmpLength}
+    \centerline{
+        \begin{tabular}{ccc}
+            \includegraphics[angle=#1,height=#4\tmpLength]{#2}
+            \hspace{-16pt}
+            \vspace{-5pt}
+            &
+            \includegraphics[angle=#1,height=#4\tmpLength]{#3} \\
+            \small \mbox{#5}
+            \vspace{-1pt}
+            \hspace{-16pt}
+            &
+            \small \mbox{#6}
+        \end{tabular}
+    } % centering
+}
+
+
 
 \newcommand{\threeAcrossLabelsSmaller}[7][0]{
   \setlength{\tmpLength}{0.95\textwidth}

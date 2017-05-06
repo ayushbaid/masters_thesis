@@ -32,7 +32,8 @@
 \usepackage{formatfig}
 \usepackage{setspace}
 
-
+\usepackage{bibentry}
+\nobibliography*
 
 %%% Macro definitions for Commonly used symbols
 \newcommand{\Rey}{\ensuremath{\mathrm{Re}}}
@@ -49,6 +50,8 @@
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
 
 
 \setstretch{1.5}
@@ -167,8 +170,8 @@
 %                         Appendices                           
 %****************************************************************
 %% Additional, supporting material, such as codes, derivations, etc., can be placed in the appendix
-\appendix
-\chapter{Supporting Material}
+%\appendix
+%\chapter{Supporting Material}
 
 %******************************************************************
 %                         Bibliography or References          
@@ -179,7 +182,7 @@
 %*******************************************************************
 %                         List of publications               
 %******************************************************************
-\include{pub}            
+\include{pub}          
 
 %*******************************************************************
 %                        Acknowledgements                    

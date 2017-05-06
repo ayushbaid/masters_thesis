@@ -89,3 +89,14 @@ In this step, we will maximize $Q(\mathbf{x}; \mathbf{x}^n)$ with respect to $\m
 There is an inherent minimization with respect to dictionary codes $S$ involved in the prior $ P \left(\mathbf{X}\right) $. \Eqref{eqn:Mvbem1} is optimized alternatively for $\mathbf{X}$ and $S$ until convergence. The algorithm for optimization over a variable is adaptive gradient descent.
 
 \section{VB-EM version 2}
+The main change in this version is that we will treat dictionary coefficients $S$ as latent variable along with $T$.
+
+The function to be maximized is
+\begin{align}
+    P \left( \mathbf{y}, \mathbf{x} | r \right) P \left( x \right) &= \int_{\mathbf{t}, S} P \left( \mathbf{y}, \mathbf{t}, \mathbf{x}, S | r \right)  \diff\mathbf{t} \diff S \\
+    &= \int_{\mathbf{t}, S} P \left( \mathbf{y} | \mathbf{t}, \mathbf{x}, S,  r \right)  P \left(\mathbf{x} | S \right) P \left( S\right) P \left( \mathbf{t} \right) \diff\mathbf{t} \diff S \label{eqn:mapDerive1}\\
+    &= \int_{\mathbf{t}, S} P \left( \mathbf{y} | \mathbf{t}, \mathbf{x},  r \right)  P \left(\mathbf{x} | S \right) P \left( S\right) P \left( \mathbf{t} \right) \diff\mathbf{t} \diff S \label{eqn:mapDerive2}
+\end{align}
+\Eqref{eqn:mapDerive2} follows as $\mathbf{y}$ is independent of $S$, given $\mathbf{t}$ and $\mathbf{x}$ due to our image formation model.
+
+% TODO: complete

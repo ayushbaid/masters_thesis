@@ -1,7 +1,148 @@
 \chapter{Results}
 
-\section{Simulated data and synthetic corruption}
+In this chapter, we will compare our methods with the existing literature. To the best of our knowledge, there is no prior work on joint removal of smoke, speckle, and noise in laparoscopy images. We will combine multiple methods which solves the subproblems and combine them for end-to-end comparison. We will use anisotropic diffusion for inpainting which will preserve texture better than anisotropic diffusion used in \cite{saint2011detection, arnold2010speckle}. The methods used for comparision are
+\begin{enumerate}
+    \item Desmoking and denoising with Kotwal ISBI16 \cite{kotwal2016joint}, followed by anisotropic diffusion for inpainting.
+    \item Desmoking and denoising with adaptive wiener filtering by Gibson ICIP13 \cite{gibson2013wiener}, followed by anisotropic diffusion inpainting.
+    \item Noise removal with edge preserving bilateral filtering, followed by smoke removal with He PAMI11 \cite{he2011dark} and anisotropic diffusion inpainting.
+\end{enumerate}
+
+\section{Experiment details}
+Proposed as well as competing methods are tuned for best performance at 3 percent noise level. For synthetic corruption, we use 3 transmission coefficient maps and 20 specularity maps. We add i.i.d. Gaussian noise of standard deviation ranging from 0 \% to 7\%. We get 3 times 6 transmission coefficient maps using 6 scalar multiples or smoke levels. We will first compare relative root mean squared error (RRMSE) by synthetically corrupting simulated data as well as high quality laparoscopy data. After that, we will get the methods evaluated by clinical experts for real world observed laparoscopy images.
+
+\section{Synthetic corruption on simulated data}
+This experiment provides proof on concept of our method. The simulated data is designed to provide basis of evaluation in terms of image texture and color.
+
+\begin{figure}[!h]
+    \threeAcrossLabels {/phantom/sample-x0_pgt} {/phantom/sample-x1_corrupt} {/phantom/sample-x4_wiener} {1} {(a)} {(b)} {(c)}
+    \threeAcrossLabels {/phantom/sample-x7_vb_dict} {/phantom/sample-x2_seq_huber} {/phantom/sample-x3_isbi} {1} {(d)} {(e)} {(f)}
+    \twoForThree {/phantom/vb_crop} {/phantom/seq_crop} {1} {(g)} {(h)}
+    \vspace{-10pt}
+    \caption
+    {
+        %
+        {\bf Qualitative Validation on Simulated Data. }
+        %
+        {\bf (a)}~Phantom (color component values $\in [0,255]$).
+        %
+        {\bf (b)}~Corrupted phantom with smoke, specularities, and low noise ($\sigma$ = 5).
+        % 
+        Results of processing image (b), using:
+        %
+        {\bf (c)}~adaptive filtering~\cite{gibson2013wiener} followed by inpainting;
+        %
+        {\bf (d)}~{\em proposed method VBEM1};
+        %
+        {\bf (e)}~denoising and desmoking~\cite{kotwal2016joint} followed by inpainting;
+        %
+        {\bf (f)}~bilateral filter for denoising followed by dehazing~\cite{he2011dark} followed by inpainting.
+        %
+        Zoomed sections:
+        %
+        {\bf (g)} of (d);
+        %
+        {\bf (h)} of (e).
+    }
+    \label{fig:phantomImages}
+\end{figure}
+An example of processing on synthetically corrupted phantom is \Figref{fig:phantomImages}. Gibson ICIP13 \cite{gibson2013wiener} plus inpaiting does a poor job at removing smoke. Bilateral filtering, He PAMI11 \cite{he2011dark} plus inpainting does a good smoke at desmoking, but the inpainting performance is poor and is displayed in zoomed sections (g) and (h). Our dictionary prior does a better job of filling in texture. Kotwal ISBI16 plus inpainting produce unnatural colors. Proposed method VBEM1 has the best removal of smoke, better texture and colors.
+
+\begin{figure}[!h]
+    \oneWidthLabel {/phantom/image_rrmse_noise} {0.8} {(a)}
+    \oneWidthLabel {/phantom/image_rrmse_smokelevels} {0.8} {(b)}
+    \caption{
+        {\bf Quantitative Validation on Simulated Data.}
+        % 
+        Box plots for RRMSE for different combinations of smoke levels and noise levels. Each combination is run 50 times.
+        % 
+        {\bf (a)} grouped by noise level $\in [0, 255]$;
+        %
+        {\bf (b)} grouped by smoke level.
+    }
+    \label{fig:phantomBoxplots}
+\end{figure}
+We perform quantitative benchmarking using RRMSE values for different methods. The results are presented in \Figref{fig:phantomBoxplots}. For the first plot, our method has the small spreads and the lowest means at all noise levels. The robustness of our algorithm is demostrated at higher noise levels. For the second part, we have lower RRMSE values, and the robustness is more pronounced in this plot.
 
 \section{High quality laparoscopy data and synthetic corruption}
+We will now perform validation on laparoscopy data. We will take high quality laparoscopy images, corrupt them synthetically, and then process using different algorithms. We will then compare the outputs with the ground truth.
+
+\begin{figure}[!h]
+    \threeAcrossLabels {/pgt/full/sample-x1_ground_truth} {/pgt/full/sample-x2_corrupt} {/pgt/full/sample-x5_wiener} {1.2} {(a)} {(b)} {(c)}
+    \threeAcrossLabels {/pgt/full/sample-x7_vb} {/pgt/full/sample-x3_seq_huber} {/pgt/full/sample-x4_isbi} {1.2} {(d)} {(e)} {(f)}
+    \vspace{-10pt}
+    \caption
+    {
+        %
+        {\bf Qualitative Validation on Simulated Data. }
+        %
+        {\bf (a)}~Ground truth (color component values $\in [0,255]$).
+        %
+        {\bf (b)}~Corrupted phantom with smoke, specular highlights, and low noise ($\sigma$ = 5).
+        % 
+        Results of processing image (b), using:
+        %
+        {\bf (c)}~adaptive filtering~\cite{gibson2013wiener} followed by inpainting;
+        %
+        {\bf (d)}~{\em proposed method VBEM1};
+        %
+        {\bf (e)}~denoising and desmoking~\cite{kotwal2016joint} followed by inpainting;
+        %
+        {\bf (f)}~bilateral filter for denoising followed by dehazing~\cite{he2011dark} followed by inpainting.
+        %
+    }
+    \label{fig:pgtImagesFull}
+\end{figure}
+\Figref{fig:pgtImagesFull} shows the results of processing on laparoscopy data. The observations are similar to those for simulated data. Gibson ICIP13 \cite{gibson2013wiener} plus inpaiting does a poor job at removing smoke. Bilateral filtering, He PAMI11 \cite{he2011dark} plus inpainting does a good smoke at desmoking, but the results has loss of edges and texture. Kotwal ISBI16 plus inpainting produce unnatural colors, particularly in the central regions. Proposed method VBEM1 has the best removal of smoke, better texture and colors. These observations are more clear in the zoomed sections in \Figref{fig:pgtImagesCropped}
+
+\begin{figure}[!h]
+    \threeAcrossLabels {/pgt/cropped/sample-x1_ground_truth} {/pgt/cropped/sample-x2_corrupt} {/pgt/cropped/sample-x5_wiener} {1.2} {(a)} {(b)} {(c)}
+    \threeAcrossLabels {/pgt/cropped/sample-x7_vb} {/pgt/cropped/sample-x3_seq_huber} {/pgt/cropped/sample-x4_isbi} {1.2} {(d)} {(e)} {(f)}
+    \vspace{-10pt}
+    \caption
+    {
+        %
+        {\bf Qualitative Validation on Simulated Data. The images (a) to (f) are zoomed in subparts of the corresponding images in \Figref{fig:pgtImagesFull}}
+    }
+    \label{fig:pgtImagesCropped}
+\end{figure}
+
+\begin{figure}[!h]
+    \oneWidthLabel {/pgt/boxplots/image_rrmse_noise} {0.8} {(a)}
+    \oneWidthLabel {/pgt/boxplots/image_rrmse_smokelevels} {0.8} {(b)}
+    \caption{
+        {\bf Quantitative Validation on High Quality Laparoscopy Data.}
+        % 
+        Box plots for RRMSE for different combinations of smoke levels and noise levels. Each combination is run for 24 images
+        % 
+        {\bf (a)} grouped by noise level $\in [0, 255]$;
+        %
+        {\bf (b)} grouped by smoke level.
+    }
+    \label{fig:pgtBoxplots}
+\end{figure}
+Quantitative evaluation using RRMSE is presented in \Figref{fig:pgtBoxplots}. In the first plot, the proposed method has better median RRMSE at all but one noise level. For the second part, we have lower RRMSE values, and robustness at high smoke levels in this plot.
 
 \section{Clinical validation}
+We asked 4 doctors to perform blind evaluation. The rating scale was 1 (bad), 2 (average), 3 (good), 4 (excellent). Same rating can be assigned for multiple methods.
+
+\begin{table}[h!]
+    \centering
+    \vspace{20pt}
+    \setlength{\tabcolsep}{12pt}
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{| c | c | c | c |}
+        \hline
+        \textbf{Method} & \textbf{Median} & \textbf{Mean} & \textbf{Standard deviation} \\
+        \hline
+        Proposed VBEM1 & 4 & 3.9 & 0.3 \\
+        \hline
+        Gibson ICIP13 + Inpainting & 1 & 1.5 & 0.8 \\
+        \hline
+        Kotwal ISBI16 + Inpainting & 3 & 2.9 & 0.4 \\
+        \hline
+        Bilat. filtering + He PAMI11 + Inpainting & 2 & 2.2 & 0.5 \\
+        \hline
+    \end{tabular}
+    \caption{\bf Clinical ratings}
+    \label{table:clinalratings}
+\end{table}
