@@ -94,9 +94,56 @@ The main change in this version is that we will treat dictionary coefficients $S
 The function to be maximized is
 \begin{align}
     P \left( \mathbf{y}, \mathbf{x} | r \right) P \left( x \right) &= \int_{\mathbf{t}, S} P \left( \mathbf{y}, \mathbf{t}, \mathbf{x}, S | r \right)  \diff\mathbf{t} \diff S \\
-    &= \int_{\mathbf{t}, S} P \left( \mathbf{y} | \mathbf{t}, \mathbf{x}, S,  r \right)  P \left(\mathbf{x} | S \right) P \left( S\right) P \left( \mathbf{t} \right) \diff\mathbf{t} \diff S \label{eqn:mapDerive1}\\
-    &= \int_{\mathbf{t}, S} P \left( \mathbf{y} | \mathbf{t}, \mathbf{x},  r \right)  P \left(\mathbf{x} | S \right) P \left( S\right) P \left( \mathbf{t} \right) \diff\mathbf{t} \diff S \label{eqn:mapDerive2}
+    &= \int_{\mathbf{t}, S} P \left( \mathbf{y} | \mathbf{t}, \mathbf{x}, S,  r \right)  P \left(\mathbf{x}, S \right) P \left( \mathbf{t} \right) \diff\mathbf{t} \diff S \label{eqn:mapDerive1}\\
+    &= \int_{\mathbf{t}, S} P \left( \mathbf{y} | \mathbf{t}, \mathbf{x},  r \right)  P \left(\mathbf{x}, S \right) P \left( \mathbf{t} \right) \diff\mathbf{t} \diff S \label{eqn:mapDerive2}
 \end{align}
 \Eqref{eqn:mapDerive2} follows as $\mathbf{y}$ is independent of $S$, given $\mathbf{t}$ and $\mathbf{x}$ due to our image formation model.
 
-% TODO: complete
+For our initial attempt, we tried factorizing $S$ keeping the L1 regularization for sparsity and non-negativity constraint. We ran into precision problems leading to numerical inaccuracy. We will use L2 regularization for sparsity and allow the coefficients to have negative values. Kernel density estimate based metric will be used as part of prior on $\mathbf{X}$ to preserve color. The joint prior distribution on $\mathbf{X}$ and $S$ is
+\begin{align}
+P(\mathbf{X}, S) &= P(S | \mathbf{X}) P(\mathbf{X})  \nonumber \\
+&= \dfrac{1}{Z} \exp \left( - \gamma_1 \sum_{i=1}^{I} \left( \min_{S_i} || \mathbf{X}_i^m - \mathbf{D} S_i ||_2^2 + \lambda || S_i ||_2 \right) - \gamma_2 J_{KDE} \left( \mathbf{X} \right) \right) \label{eqn:xSJointPrior}
+\end{align}
+where $Z$ is the normalization constant, and $\gamma_1, \gamma_2$ are weights to adjust the effect of two components of the prior.
+
+\subsection{E step}
+Continuing the notation and the derivation process from the previous section, the $Q$ function is
+\begin{align}
+    Q(\mathbf{x}; \mathbf{x^n}) &= \mathbb{E}_{ P \left( \mathbf{T}, S | \mathbf{x}^n, y, r \right)} \left[ \log P \left( \mathbf{y}, \mathbf{T}, \mathbf{x}, \mathbf{S} | r \right)\right] \label{eqn:Qvbem2}
+\end{align}
+
+Our image formation model leads to the following simplification in the posterior distribution over latent variables and the probability of the joint data
+\begin{align}
+    P \left( \mathbf{T}, S | \mathbf{x}^n, \mathbf{y}, r \right) &= P \left( \mathbf{T} | \mathbf{x}^n, \mathbf{y}, r \right) P \left( S | \mathbf{x}^n \right) \\
+    P \left( S | \mathbf{x}^n\right) &= \prod_{i} P \left( S_i | \mathbf{x}^n \right) \label{eqn:obCodeFact} \\
+    P \left( \mathbf{y}, \mathbf{T}, \mathbf{x}, \mathbf{S} | r \right) &= P \left( \mathbf{y} | \mathbf{T}, \mathbf{x}, \mathbf{S}, r \right) P \left( \mathbf{S} | \mathbf{x} \right) P \left( \mathbf{X} \right) P \left( \mathbf{T} \right)
+\end{align}
+where the factorization in \Eqref{eqn:obCodeFact} is evident from \Eqref{eqn:xSJointPrior}.
+
+Using these simplifications, the $Q$ function is rewritten in \Eqref{eqn:Qvbem2Simplified}. The two expectations are analytically intractable. The first term is solved in the exact same manner as VBEM1, using factorization on $T$ per pixel. For the second term, we will assume a factorization on coefficient corresponding to each dictionary atoms for codes $\lbrace S_i \rbrace$.
+\begin{align}
+ Q(\mathbf{x}; \mathbf{x}^n) &= \mathbb{E}_{ P \left( \mathbf{T} | \mathbf{x}^n, \mathbf{y}, r \right)} \log \left[ P \left( \mathbf{y} | \mathbf{T}, \mathbf{x}, \mathbf{S}, r \right)  P \left( \mathbf{T} \right) \right] + \sum_i \mathbb{E}_{ P \left( S_i | \mathbf{x}^n \right)} \left[ \log P \left( S_i | \mathbf{X} \right) \right] + \log P \left( \mathbf{X} \right) \label{eqn:Qvbem2Simplified}
+\end{align}
+
+
+We will assume a Gaussian factorization for $S_i$. \Eqref{eqn:solveVbem2} is solved sequentially over all $j$ to obtain optimum factorization.
+\begin{align}
+    P \left( S_i | \mathbf{x}^n \right) \approx \prod_{j} G_{ij} (S_{ij} | \mathbf{X}) \label{eqn:factVbem2} \\
+    \log G_{ij}^* \left( S_{ij} \right) = \mathbb{E}_{ \prod_{k \neq j} G_{ik} \left( S_{ij} | \mathbf{x}^n \right) } \left[ \log P \left( S_i | \mathbf{x}^n \right)\right] \label{eqn:solveVbem2}
+\end{align}
+
+The optimum parameters $\lbrace \mu_{ij}, \sigma_{ij} \rbrace$ of the factors are derived in the following text. We will first write down the probability distribution over $S_i$.
+\begin{align}
+    \log P \left( S_i | \mathbf{x}^n \right) &= -0.5 \gamma_1 || \left( \mathbf{x}^n \right)_i^m - \sum_k D_k S_{ik} ||_2^2 - \gamma_1 \lambda \sum_k S_{ik}^2 \label{eqn:derive1Vbem2}
+\end{align}
+To solve \Eqref{eqn:solveVbem2}, we substitute $\lbrace S_{ik} | k \neq j\rbrace$ with $\lbrace \mu_{ij} \rbrace$ and $\lbrace S_{ik}^2 | k \neq j\rbrace$ with $\lbrace \mu_{ik}^2 + \sigma_{ik}^2 \rbrace$ in \Eqref{eqn:derive1Vbem2}. We will obtain the optimum parameters for $G_{ij}$ by the following equations.
+\begin{align}
+    \mu_{ij} &= \frac{ D_j^\intercal \left( \left(\mathbf{x}^n\right)_i^m - \sum_{k \neq j} D_k S_{ik} \right) }{ D_j^\intercal D_j + 2 \lambda } \\
+    \sigma_{ij} &= \frac{1}{\sqrt{ D_j^\intercal D_j + 2 \lambda }}
+\end{align} 
+
+We will solve for optimum parameters of factors sequentially until convergence. Then \ref{eqn:Qvbem2Simplified} will be solved by substitution of $\lbrace \mu_{ij} \rbrace$ for $S_{ij}$ in addition to substitutions for $\mathbf{T}$ detailed in VBEM1.
+
+The M step of VBEM2 will be the same as in VBEM1. We will solve an optimization problem over $\mathbf{X}$.
+
+
