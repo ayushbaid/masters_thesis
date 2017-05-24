@@ -231,6 +231,22 @@
   } % centering
 }
 
+\newcommand{\twoAcrossLabelsLargest}[5][0]{
+    \setlength{\tmpLength}{0.95\textwidth}
+    \setlength{\tmpLength}{0.50\tmpLength}
+    \centerline{
+        \begin{tabular}{cc}
+            \includegraphics[angle=#1,width=\tmpLength]{#2}
+            &
+            \includegraphics[angle=#1,width=\tmpLength]{#3}
+            \\
+            \small \mbox{#4}
+            &
+            \small \mbox{#5}
+        \end{tabular}
+    } % centering
+}
+
 \newcommand{\twoAcrossZoomFirst}[6]{
   \setlength{\tmpLength}{0.95\textwidth}
   \setlength{\tmpLength}{0.5\tmpLength}

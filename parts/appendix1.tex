@@ -1,0 +1,30 @@
+\appendix
+\label{app:factorParamsT}
+
+\chapter{Optimal factors for tranmission map $\mathbf{T}$ }
+
+We will now derive the parameters of optimum factorization. We will use $z_i$ is as defined in \Eqref{eqn:speckle} to simplify the notation.
+\begin{align}
+\begin{split}
+\log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) = - \sum_{i} &\left( y_i - T_i z_i - (1-T_i) K_{smoke} \right)^2 \\ &- \gamma_3 \sum_{i} \sum_{j \in \mathcal{N}_i^T}  w_{ij}^T (T_i - T_j)^2
+\end{split}
+\label{eqn:derive_1_factvbem1}
+\end{align}
+To solve \Eqref{eqn:solvefactvbem1}, we replace $ \lbrace T_j | j \neq i \rbrace $ with current optimum means $ \lbrace \mu_j \rbrace$ and $ \lbrace T_j^2 | j \neq i \rbrace $ with $ \lbrace \mu_j^2 + \sigma_j^2 \rbrace $ in \Eqref{eqn:derive_1_factvbem1}. This will result in a quadratic equation in $T_i$, from which the parameters $ \left( \mu_i, \sigma_i \right) $ of Gaussian factor $F_i$ can be solved for. The final solution is derived as
+\begin{align}
+\bar{\mu}_i &= \frac{ \left( y_i - K_{smoke} \right) \left( z_i - K_{smoke} \right) + 2 \gamma_3 \sum_{ j \in \mathcal{N}_i^T } w_{ij}^T \mu_j } { \left( z_i - K_{smoke} \right)^2 + 2 \gamma_3 \sum_{ j \in \mathcal{N}_i^T } w_{ij}^T } \\
+\bar{\sigma}_i &= \frac{ 1 } { \sqrt{2} }\left( \left( z_i - K_{smoke} \right)^2 + 2 \gamma_3 \sum_{ j \in \mathcal{N}_i^T } w_{ij}^T \right)^{-\frac{1}{2}}  \\
+\alpha_i &= -\frac{\bar\mu_i}{\bar\sigma_i} \\
+\beta_i &= \frac{1-\bar\mu_i}{\bar\sigma_i} \\
+\mu_i &= \bar\mu_i + \bar\sigma_i \frac{\phi\left(\alpha_i \right) - \phi\left(\beta_i \right)}{\Phi\left(\beta_i \right) - \Phi\left(\alpha_i \right)} \label{eqn:mean_t_vbem1} \\
+\sigma_i &= \bar\sigma_i^2 \left[ 1 + \frac{\alpha_i \phi\left(\alpha_i \right) - \beta_i  \phi\left(\beta_i \right)}{\Phi\left(\beta_i \right) - \Phi\left(\alpha_i \right)} - \left(\frac{\phi\left(\alpha_i \right) - \phi\left(\beta_i \right)}{\Phi\left(\beta_i \right) - \Phi\left(\alpha_i \right)} \right)^2 \right] \label{eqn:std_t_vbem1}  
+\end{align}
+where $\phi$ and $\Phi$ are PDF and CDF of standard normal distribution. 
+
+
+\chapter{Optimal factors for codes $\mathbf{S}$ }
+
+\begin{align}
+\mu_{ij} &= \frac{ D_j^\intercal \left( \left(\mathbf{x}^n\right)_i^m - \sum_{k \neq j} D_k S_{ik} \right) }{ D_j^\intercal D_j + 2 \lambda } \\
+\sigma_{ij} &= \frac{1}{\sqrt{ D_j^\intercal D_j + 2 \lambda }}
+\end{align}

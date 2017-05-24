@@ -1,6 +1,6 @@
 \chapter{Results}
 
-In this chapter, we will compare our methods with the existing literature. To the best of our knowledge, there is no prior work on joint removal of smoke, speckle, and noise in laparoscopy images. We will combine multiple methods which solves the subproblems and combine them for end-to-end comparison. We will use anisotropic diffusion for inpainting which will preserve texture better than anisotropic diffusion used in \cite{saint2011detection, arnold2010speckle}. The methods used for comparision are
+In this chapter, we will compare our methods with the existing literature. To the best of our knowledge, there is no prior work on joint removal of smoke, speckle, and noise in laparoscopy images. We will combine multiple methods which solves the subproblems and combine them for end-to-end comparison. We will use anisotropic diffusion for inpainting which will preserve texture better than isotropic diffusion used in \cite{saint2011detection, arnold2010speckle}. The methods used for comparision are
 \begin{enumerate}
     \item Desmoking and denoising with Kotwal ISBI16 \cite{kotwal2016joint}, followed by anisotropic diffusion for inpainting.
     \item Desmoking and denoising with adaptive wiener filtering by Gibson ICIP13 \cite{gibson2013wiener}, followed by anisotropic diffusion inpainting.
@@ -48,16 +48,16 @@ This experiment provides proof on concept of our method. The simulated data is d
 An example of processing on synthetically corrupted phantom is \Figref{fig:phantomImages}. Gibson ICIP13 \cite{gibson2013wiener} plus inpaiting does a poor job at removing smoke. Bilateral filtering, He PAMI11 \cite{he2011dark} plus inpainting does a good smoke at desmoking, but the inpainting performance is poor and is displayed in zoomed sections (g) and (h). Our dictionary prior does a better job of filling in texture. Kotwal ISBI16 plus inpainting produce unnatural colors. Proposed method VBEM1 has the best removal of smoke, better texture and colors.
 
 \begin{figure}[!h]
-    \oneWidthLabel {/phantom/image_rrmse_noise} {0.8} {(a)}
-    \oneWidthLabel {/phantom/image_rrmse_smokelevels} {0.8} {(b)}
+    \twoAcrossLabelsLargest {/phantom/image_rrmse_noise} {/phantom/image_rrmse_smokelevels} {(a)}{(b)}
+    \twoAcrossLabelsLargest {/phantom/ssim_noise} {/phantom/ssim_smokelevels} {(c)}{(d)}
     \caption{
         {\bf Quantitative Validation on Simulated Data.}
         % 
-        Box plots for RRMSE for different combinations of smoke levels and noise levels. Each combination is run 50 times.
+        Box plots for RRMSE (\textbf{a}, \textbf{b}) and SSIM (\textbf{c}, \textbf{d}) for different combinations of smoke levels and noise levels. Each combination is run 50 times.
         % 
-        {\bf (a)} grouped by noise level $\in [0, 255]$;
+        {\bf (a), (c)} grouped by noise level $\in [0, 255]$;
         %
-        {\bf (b)} grouped by smoke level.
+        {\bf (b), (d)} grouped by smoke level.
     }
     \label{fig:phantomBoxplots}
 \end{figure}
