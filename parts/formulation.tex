@@ -1,54 +1,43 @@
 \chapter{Formulation}
 
-In this chapter, we will define the variables in the system and present the image formation model in \Secref{sec:imgformation}. We use Markov random fields (MRFs) to model the variables and will introduce the prior functions in the following sections. We will then conclude this chapter by discussing the MRF structure and the final prior distribution for the variables in \Secref{sec:modelX} and \Secref{sec:modelT}.
+In this chapter, we will first cover the concept of sparse coding which will be used in our design of prior probaiblity on the uncorrupted image estimate $\mathbf{X}$. We then introduce a new colorspace and introduce a novel penalty function which matches two cumulative distribution functions (CDFs). We then design an MRF prior on the uncorrupted image estimate. This will be followed by the image formation model and then design of the remaining variables in the system.
 
-Our notation scheme is to use upper case for random variables and lower case for their specific instance. Bold face will denote a set of random variables over the whole image, one for each pixel. $\mathbf{X}$ is an uncorrupted image, which we want to estimate. $\mathbf{Y}$ is the observed image, $\mathbf{T}$ is the smoke transmission map, and $\mathbf{R}$ is the speckle map. $K_{spec}$ and $K_{smoke}$ are speckle and smoke color respectively.
+Our notation scheme is to use upper case for random variables and lower case for their specific instance. Bold face will denote a set of random variables over the whole image, and normal face will denote an element from that set.
 
-We have two variables to model, $\mathbf{X}$ and $\mathbf{T}$. For $I$ pixels in the image, the MRFs are denoted by $\mathbf{X} := \lbrace X_i \rbrace_{i=1}^{I}$ and $\mathbf{T} := \lbrace T_i \rbrace_{i=1}^{I}$. Each $X_i$ is a vector denoting value of pixel $i$ in \textit{RGB} space and $T_i$ is a scalar in  $[0, 1]$. We want our estimate of the underlying true image to have sharp texture and edges, and natural colors sans the smoke. We also want the transmission map to have spatial regularity.
+\section{Sparse coding over a dictionary}
+Given a data vector $W$, a linear decomposition over the dictionary $\mathbf{D}$ is
+\begin{align}
+    W \approx \mathbf{D} S \label{eqn:lineardecomp}
+\end{align}
+where $S$ is called the coding of $W$.
 
-\section{Image formation}
-\label{sec:imgformation}
-The artifacts are captured in a 3 step fashion. In this section, $i$ denotes the pixel location. \Eqref{eqn:speckle} captures the effect of speckles using a binary speckle map $\mathbf{R}$, where $R_i$ having a value $1$ denotes the presence of speckle. \Eqref{eqn:smokenoise} captures the smoke using smoke map $\mathbf{T}, T_i \in [0, 1]$ and an i.i.d white Gaussian noise $n_i$ is added at each pixel. $\mathbf{Y}$ is captured and available for processing.
+In sparse coding \cite{harpur1996sc}, we want to represent an input vector to be using as few atoms of the dictionary as possible, i.e. $S$ should only a few entries with significant magnitude. \cite{olshausen1996sparse} demonstrated that the dictionary atoms learnt via sparse coding bears similarity to precessing by visual cortex by learning features which are localized, oriented, and bandpass. A common way to enforce sparsity is to regularize the codes. A penalty function which uses regularization is of the form
 
 \begin{align}
-    Z_i &= (1 - R_i) X_i  + R_i K_{spec} \label{eqn:speckle} \\
-    Y_i &= T_i Z_i + (1 - T_i) K_{smoke} + \eta_i \label{eqn:smokenoise}
+    J(\mathbf{D}, S) = || W - \mathbf{D} S ||_2^2 + \lambda \sum_{j} f(S_{j}) \label{eqn:sparsecoding}
 \end{align}
-
-\section{Sparse coding under a dictionary}
-
-Given a data vector $X$, and a dictionary $\mathbf{D}$, a linear decomposition in terms of codes $S$ is of the form 
-\begin{align}
-    X \approx \mathbf{D} S \label{eqn:lineardecomp}
-\end{align}
-
-In sparse coding \cite{harpur1996sc}, we want to represent an input vector to be using as few atoms of the dictionary as possible. \cite{olshausen1996sparse} demonstrated that the dictionary atoms learnt via sparse coding bears similarity to precessing by visual cortex by learning features which are localized, oriented, and bandpass. A common way to enforce sparsity is to regularize the codes [ \Eqref{eqn:sparsecoding} ], where $\lambda$ controls the trade-off between sparsity and reconstruction accuracy.
-
-\begin{align}
-    J(\mathbf{D}, S) = \frac{1}{2} || X - \mathbf{D} S ||_2^2 + \lambda \sum_{j} f(S_{j}) \label{eqn:sparsecoding}
-\end{align}
-The sparsity function $f$ typically is strictly increasing function of the absolute value of its argument. 
-
+where $\lambda$ is called the regularization constant and controls the trade-off between sparsity and reconstruction accuracy, and $f$ typically is strictly increasing function of the absolute value of its argument and hence favor sparsity.
 
 Sparse coding using L1 regularization, i.e. $f(S_{j}) = | S_{j} |$, was used to perform digit recognition in \cite{mairal2009supervised}. Non-negative sparse coding \cite{hoyer2002nnsc} constrains the dictionary and codes to be non-negative. The choice of sparsity function is $f(S_{j}) = | S_{j} | = S_{j}$. \cite{mairal2009online} proposed an online algorithm for dictionary learning in sparse coding framework using L1 regularization. They use least angle regression to solve the sparse coding problem, given a dictionary. Their algorithm and accompanying code provide a significant speedup for learning a  dictionary on large datasets.
 
-Given a dictionary $\mathbf{D}$ and input vector $X$, the weighted least square optimization problem in \Eqref{eqn:wls}, where $\Gamma$ is a diagonal matrix containing the weight for each coefficient. Given a fixed $\Gamma$, the optimum code is given by \Eqref{eqn:wlsSolution}.
+The L1 regularization problem can be approximated by an iterative reweighted least square optimization algorithm. The core of the iterative scheme is a weighted least square problem, which is described in the following text. Given a dictionary $\mathbf{D}$ and input vector $W$, the weighted least square optimization problem and its solution are
 \begin{align}
-    S^* &= \argmin_{S} \frac{1}{2} || X - \mathbf{D} S ||_2^2 + \lambda || \Gamma S ||_2^2 \label{eqn:wls}\\
-    &= \left( \mathbf{D}^\intercal \mathbf{D} + 2 \lambda \Gamma^\intercal \Gamma \right)^{-1} \mathbf{D}^\intercal X \label{eqn:wlsSolution}
+    S^* &= \argmin_{S} \frac{1}{2} || W - \mathbf{D} S ||_2^2 + \lambda || \Gamma S ||_2^2 \label{eqn:wls}\\
+    &= \left( \mathbf{D}^\intercal \mathbf{D} + \lambda \Gamma^\intercal \Gamma \right)^{-1} \mathbf{D}^\intercal W \label{eqn:wlsSolution}
 \end{align}
-Iterative reweighted least squares algorithm is an iterative algorithm, where in each step the weighted L2 regularized optimization problem is solved. It can be used to solve L1 regularized least square problem where the weights are chosen to be inverse of the absolute value of the current coefficients. If $S^n$ is the estimate before iteration $n$, then the optimization objective will be
+where $\Gamma$ is the weight matrix. This core optimization scheme is used iteratively in iterative reweighted least squares algorithm, where in each step the weighted L2 regularized least square problem is solved. It can be used to solve L1 regularized least square problem when the weights in each iteration are chosen to be inverse of the absolute value of the current estimate of the coding \cite{chartrand2008iteratively}. If $S^n$ is the estimate before iteration $n$, then the next estimate will be
 \begin{align}
-    S^{n+1} &= \argmin_{S} \frac{1}{2} || X - \mathbf{D} S ||_2^2 + \lambda \sum_{j} \frac{1}{| S_j^n |} \left( S_j \right)^2 \label{eqn:irls_l1} 
+    S^{n+1} &= \argmin_{S} || W - \mathbf{D} S ||_2^2 + \lambda \sum_{j} \frac{1}{| S_j^n |} \left( S_j \right)^2 \label{eqn:irls_l1} 
 \end{align}
 This iterative method of fixing the weights and solving a weighted L2 problem runs until convergence.
 
 
 
 \section{Image intensity distribution}
-Surgical smoke, generally gray, perturbs the color in the image. We need some model distribution of colors in uncorrupted high quality laparoscopy images to compare our image at hand with. A distribution in the combined \textit{RGB} space is the best model but it gives rise to high complexity for its representation as no generic distribution can fit our dataset.
+\label{sec:pcaDist}
+Surgical smoke is generally gray in color. It perturbs the color in the image and hence the overall distribution of colors. We need some model distribution of colors in uncorrupted high quality laparoscopy images to compare the observed image with. A distribution in a 3 dimensional colorspace will be the best fit on the data. But it gives rise to high computational complexity, and also no generic distribution fits the laparoscopy dataset. So, we consider modeling the distributions along 3 channels independently.
 
-The channels in the \textit{RGB} space exhibit very high correlation and modeling the channels independently is a poor choice. We first transform the data from \textit{RGB} space to \textit{LMS} space, as the latter is closely related to human perception. We then calculate the eigenvectors and use them as the basis vectors for the new space, which we call \textit{l$\alpha\beta$} space. The final transformation is 
+The channels in the \emph{RGB} space exhibit very high correlation and modeling the channels independently is a poor choice. We use a data-adaptive decorrelated colorspace \cite{reinhard2001color}. We first transform the data from \emph{RGB} space to \emph{LMS} space, as the latter is closely related to human perception. We then calculate the eigenvectors in the \emph{LMS} space and use them as the basis vectors for the new space, which we call \emph{l$\alpha\beta$} space. The final transformation is 
 \begin{align}
     \begin{bmatrix}
     l \\ \alpha \\ \beta
@@ -64,10 +53,10 @@ The channels in the \textit{RGB} space exhibit very high correlation and modelin
     \end{bmatrix}
 \end{align}
 
-The correlation between channels in \textit{RGB} space is $\left[ 0.96, 0.99, .94\right]$ and that in \textit{l$\alpha\beta$} space is $\left[ 0.62, 0.63, 0.81 \right]$. The new space has a clear advantage when we model the intensity distribution channel-wise and independent of other channels. We use a Gamma distribution to fit the \textit{l} channel and Gaussian distributions to fit $\alpha$ and $\beta$ channels respectively. The emperical distributions and the fits are illustrated in \Figref{fig:intensityDist}
+The cross-correlation between channels in \emph{RGB} space is $\left[ 0.96, 0.99, 0.94\right]$ and that in \emph{l$\alpha\beta$} space is $\left[ 0.62, 0.63, 0.81 \right]$. The new space has a clear advantage when we model the intensity distribution channel-wise and independent of other channels. We use a Gamma distribution to fit the \textit{l} channel and Gaussian distributions to fit $\alpha$ and $\beta$ channels respectively. The emperical distributions and the fits are illustrated in \Figref{fig:intensityDist}
 
 \begin{figure}[!t]
-    \threeAcrossHeight{graphics/dist/axis_1.png}{graphics/dist/axis_2.png}{graphics/dist/axis_3.png}{0.33}
+    \threeAcrossHeight{Pics/axis_1.png}{Pics/axis_2.png}{Pics/axis_3.png}{0.33}
     \caption
     {
         %
@@ -81,64 +70,77 @@ The correlation between channels in \textit{RGB} space is $\left[ 0.96, 0.99, .9
 \end{figure}
 
 
-%\section{KS statistic}
-%Kolmogorov-Smirnov (KS) statistic is used to compare a sample with a reference probability distribution. Given an empirical cumulative distribution function (CDF) $F_{emp}$ and reference CDF $F_{ref}$, the KS distance is
-%\begin{align}
-%    KS(F^{emp}; F^{ref}) = \max_{k} | F^{emp}(k) - F^{ref}(k) | \label{eqn:ks_distance}
-%\end{align}
-%KS distance has low computational complexity but it is not differentiable. We can approximate the gradient as $k - \text{cdfmatch}(F^{emp}; F^{ref})(k)$, where cdfmatch is the CDF matching function.
-%
-%On our data, we will generate the empirical distribution $F_\mathbf{x}$, evaluate the KS statistic independently for the three channels and add them up. The total penalty will be
-%\begin{align}
-%    J_{KS}(\mathbf{x}) = \sum_{i=1}^{3} KS(F^{\mathbf{x}}_{c_i}; F^{ref}_{c_i}) \label{eqn:cost_ks}
-%\end{align}
-%where $c_i$ is channel number $i$.
-
 \section{Kernel density estimation}
-Kernel density estimation (KDE) can used to estimate the probability density function in a non-parametric way. Let $ \mathbf{x} = \left( x_1, x_2, ..., x_n\right)$ be i.i.d. samples from a distribution $f$. The kernel density estimate is
+Kernel density estimation (KDE) can used to estimate the probability density function in a non-parametric way. Let $ \mathbf{w} = \left( w_1, w_2, ..., w_n\right)$ be i.i.d. samples from a distribution $f$. The kernel density estimate is
 \begin{align}
-    f^\mathbf{x} (b) = \frac{1}{nh} \sum_{i=1}^{n} K\left(\frac{b-x_i}{h}\right) \label{eqn:kde}
+    f^\mathbf{w} (b) = \frac{1}{nh} \sum_{i=1}^{n} K\left(\frac{b-w_i}{h}\right) \label{eqn:kde}
 \end{align}
-where $K(.)$ is a kernel which takes non-negative values, integrate to one, and has mean zero. $h > 0$ is the bandwidth and controls the trade-off between bias and variance of the estimator . We will use the Gaussian kernel due to its mathematical property like differentiability. Due to our choice of Gaussian kernel, we can use the rule of thumb estimate \cite{silverman1986density} for bandwidth using the sample standard deviation $\hat{\sigma}$. \Eqref{eqn:kdebw} is used to tune the bandwidth using training data.
+where $K(.)$ is a kernel which takes non-negative values, integrate to one, and has a mean zero. $h > 0$ is the bandwidth and controls the trade-off between bias and variance of the estimator . We will use a Gaussian kernel due to its mathematical property like differentiability. Due to our choice of Gaussian kernel, we can use the rule of thumb estimate \cite{silverman1986density} for bandwidth using the sample standard deviation $\hat{\sigma}$. The rule of thumb estimate is
 \begin{align}
     h = \left( \frac{4 \hat{\sigma}^5}{3n}\right)^{\frac{1}{5}} \label{eqn:kdebw}
 \end{align}
 
 We will now derive the CDF estimator and its gradients using the Gaussian kernel.
 \begin{align}
-    f^\mathbf{x} (b) &= \frac{1}{nh \sqrt{2 \pi \sigma^2}} \sum_{i=1}^{n} \exp \left( -\frac{(b-x_i)^2} {2 \sigma^2 h^2}\right) \\
-    F^\mathbf{x} (b) &= \sum_{s=x_{min}}^{b} f^\mathbf{x} (s) \label{eqn:kdecdf} \\
+    f^\mathbf{w} (b) &= \frac{1}{nh \sqrt{2 \pi \sigma^2}} \sum_{i=1}^{n} \exp \left( -\frac{(b-w_i)^2} {2 \sigma^2 h^2}\right) \\
+    F^\mathbf{w} (b) &= \int_{l=-\infty}^{b} f^\mathbf{w} (l) \diff l \label{eqn:kdecdf} \\
     % grads
-    \frac{\partial f^\mathbf{x} (b)}{\partial x_i} &=  \frac{1}{nh \sqrt{2 \pi \sigma^2}} \exp \left( -\frac{(b-x_i)^2} {2 \sigma^2 h^2}\right) \frac{ \left( b - x_i \right) }{ \sigma^2 h^2} \\
-    \frac{\partial F^\mathbf{x} (b)} {\partial x_i} &= \sum_{s=x_{min}}^{b} \frac{\partial f^\mathbf{x}_h (s)}{\partial x_i}
+    \frac{\partial f^\mathbf{w} (b)}{\partial w_i} &=  \frac{1}{nh \sqrt{2 \pi \sigma^2}} \exp \left( -\frac{(b-w_i)^2} {2 \sigma^2 h^2}\right) \frac{ \left( b - w_i \right) }{ \sigma^2 h^2} \\
+    \frac{\partial F^\mathbf{w} (b)} {\partial w_i} &= \int
+    _{l=-\infty}^{b} \frac{\partial f^\mathbf{w} (l)}{\partial w_i} \diff l
 \end{align}
 
-We will now introduce the penalty function $J_{dist}$ in \Eqref{eqn:kdecost} and its gradient, where $H(\cdot)$ in evaluates the transformation of a point under CDF matching of the empirical distribution with the reference [\Eqref{eqn:cdfinv}]. The choice of the penalty function was made as it exhibits better convergence when gradient descent is used for optimization.
+We will formulate a \emph{novel} penalty which compares an empirical CDF $F^\mathbf{w}$ with a template CDF $F^\text{ref}$. Our formulation is motivated with CDF matching. We map fixed set of points $B$ under the CDF matching transform from empirical to template CDF, and penalize squared difference of the set of output points with the input. When the two CDFs match, the outputs will be the same as input points and hence the cost will be zero. The cost function and its gradient with respect to a point in $\mathbf{w}$ are
 \begin{align}
-    J_{dist} (\mathbf{x}) &= \sum_{b \in B} \left\lbrace b - H \left( b; F^\mathbf{x}, F^{ref} \right) \right\rbrace^2 \label{eqn:kdecost} \\
-    \frac{ \partial J_{dist} (\mathbf{x})} { \partial x_i} &= 2 \sum_{b \in B} \left\lbrace b - H \left( b; F^\mathbf{x}, F_{ref} \right) \right\rbrace \frac{\partial H \left( b; F^\mathbf{x}, F_{ref} \right)}{\partial x_i}
+    J_\text{dist} (\mathbf{w}) &= \sum_{b \in B} \left\lbrace b - H \left( b; F^\mathbf{w}, F^\text{ref} \right) \right\rbrace^2 \label{eqn:kdecost} \\
+    \frac{ \partial J_\text{dist} (\mathbf{w})} { \partial w_i} &= 2 \sum_{b \in B} \left\lbrace b - H \left( b; F^\mathbf{w}, F^\text{ref} \right) \right\rbrace \frac{\partial H \left( b; F^\mathbf{w}, F^\text{ref} \right)}{\partial w_i}
 \end{align}
+where $H \left( \cdot \right)$ evaluates the mapping of a point $b$ under CDF matching transform between two distributions. The function will have gradients with respect to $w_i$ via the empirical CDF. The function and its gradient are
 \begin{align}
-    H \left( b; F^\mathbf{x}, F_{ref} \right) &= F_{ref}^{-1} \left( F^\mathbf{x} (b) \right) \label{eqn:cdfinv} \\
-    \frac{\partial H \left( b; F^\mathbf{x}, F_{ref} \right)}{\partial x_i} &= F_{ref}^{-1} \left( F^\mathbf{x} (b) \right) \frac{ \partial F^\mathbf{x} (b; x_1^n)} { \partial x_i}
-\end{align}
-
-For use in laparoscopy data, we will add up the penalty for each channel $c_i$ independently.
-\begin{align}
-    J_{KDE}(\mathbf{x}) = \sum_{i=1}^{3} \sum_{b \in B_{c_i}} \left\lbrace b - H \left( b; F^\mathbf{x}_{c_i}, F^{ref}_{c_i} \right) \right\rbrace^2 \label{eqn:cost_kde}
+    H \left( b; F^\mathbf{w}, F^\text{ref} \right) &= \left( F^\text{ref}\right)^{-1} \left( F^\mathbf{w} \left(b \right) \right) \label{eqn:cdfinv} \\
+    \frac{\partial H \left( b; F^\mathbf{w}, F^\text{ref} \right)}{\partial w_i} &= \frac{ \partial \left( \left( F^\text{ref}\right)^{-1} F^\mathbf{w} \left(b\right) \right) } { \partial F^\mathbf{w} \left( b \right) } \frac{ \partial F^\mathbf{w} \left( b \right)} { \partial w_i}
 \end{align}
 
-\section{Prior on image $\mathbf{X}$}
-We will define the prior on $\mathbf{X}$ conditional on the sparse code $\mathbf{S}$. The MRF $\mathbf{X} := \lbrace X_i \rbrace_{i=1}^{I}$ has a fully connected neighborhood system. We use the sparse coding prior to preserve texture and remove noise, and KDE prior to preserve image intensity statistics. We define potentials on each square clique of size $m \times m$, where $m$ is odd. For KDE prior, we define potential on clique containing all the pixel locations. The probability distribution for $\mathbf{X}$ is
+\section{MRF model on image $\mathbf{X}$}
+\label{sec:modelX}
+
+The uncorrupted image containing $I$ pixels is modeled by an MRF $\mathbf{X} := \lbrace X_i \rbrace_{i=1}^{I}$, where $X_i \in \left[0, 1\right]^3$ is a vector of \emph{RGB} values at each pixel. We will define potential functions on cliques of this MRF and use it as prior probability on $\mathbf{X}$. We use the sparse coding prior to preserve texture and remove noise, and image intensity distribution prior to enforce image intensity statistics. The neighborhood system $\mathcal{N}$ is a fully connected system.
+
+Using the kernel density estimation based penalty function \Eqref{eqn:kdecost}, we define potential function on a clique containing all the pixels in the image. The expression for the same is
 \begin{align}
-    P\left(\mathbf{X} |\mathbf{S}\right) &= P \left (\mathbf{S} | \mathbf{X} \right) P\left( \mathbf{X} \right) &= \frac{1}{Z} \exp \left( -\gamma_1 \sum_{i=1}^{I} \left( || \mathbf{X}_i^m - \mathbf{D} S_i ||_2^2 + \lambda \sum_{j} w_{ij} S_{ij}^2 \right) - \gamma_2 J_{KDE} \left( \mathbf{X} \right) \right) \label{eqn:xGivenS}
+J_\text{dist}(\mathbf{X}) = \sum_{i=1}^{3} \sum_{b \in B_{c_i}} \left\lbrace b - H \left( b; F^\mathbf{X}_{c_i}, F^\text{ref}_{c_i} \right) \right\rbrace^2 \label{eqn:cost_kde}
 \end{align}
-where $\mathbf{X}_i^m$ is an $m \times m$ patch centered at pixel $i$, and its code under the prelearnt dictionary is $S_i$. $\gamma_1$, $\gamma_2$ are free parameters to adjust the weights. $Z$ is the normalization constant.
+where $B_{c_i}$ is a fixed set of points in channel $c_i$. The colorspace of operation is $l\alpha\beta$ introduced in \Secref{sec:pcaDist}.
+
+We will use L1 regularized sparse coding on full patches (i.e. patches fully contained in the image) of size $\acute{m} \times \acute{m}$ of $\mathbf{X}$ as the second penalty function. We define potentials on each square clique of size $m \times m$, where $m := 2\acute{m} - 1$. This translated to a sparse coding cost penalty on full patches $\lbrace \mathbf{\bar X}_i \rbrace_{i=1}^{\acute{I}}$, which is defined as
+\begin{align}
+    J_\text{dict} \left( \mathbf{X}, \mathbf{S} \right) &= \sum_{i=1}^{\acute{I}} \| \mathbf{\bar X}_i - \mathbf{D} S_i \|_2^2 + \lambda \| S_i \|_1 \label{eqn:dictCost}
+\end{align}
+where $\mathbf{D} := \lbrace D_j \rbrace_{j=1}^{J}$ is a fixed dictionary, learnt from a training set.
+
+The prior probability on $\mathbf{X}$ is defined as $P\left( \mathbf{X} \right) = \int_{\mathbf{S}} \exp \left( -E\left(\mathbf{X}, \mathbf{S} \right) \right) \diff \mathbf{S} / Z$, where the Gibbs energy function is
+\begin{align}
+    E \left(\mathbf{X}, \mathbf{S} \right) &= \gamma_1 J_\text{dict} \left( \mathbf{X}, \mathbf{S} \right) + \gamma_2 J_\text{dist} \left( \mathbf{X} \right)
+\end{align}
+and $Z$ is the normalization constant, and $\gamma_1, \gamma_2 \in \mathbb{R}^+$ are free parameters.
+
+\section{Image formation}
+\label{sec:imgformation}
+The artifacts are captured in a 3 step fashion. In this section, $i$ denotes the pixel location. \Eqref{eqn:speckle} captures the effect of speckles using a binary speckle map $\mathbf{R}$, where $R_i = 1$ denotes the presence of speckle at pixel $i$. \Eqref{eqn:smokenoise} captures the smoke using transmission coefficient $T_i \in [0, 1]$. To capture noise, an i.i.d. white Gaussian noise $\eta_i$ is added at each pixel. $\mathbf{Y}$ is captured and available for processing.
+\begin{align}
+Z_i &= (1 - R_i) X_i  + R_i K_\text{spec} \label{eqn:speckle} \\
+Y_i &= T_i Z_i + (1 - T_i) K_\text{smoke} + \eta_i \label{eqn:smokenoise}
+\end{align}
+where $K_\text{spec}$ and $K_\text{smoke}$ are speckle and smoke color respectively.
+
+
+Over all pixels, $\mathbf{X}$ is an uncorrupted image, which we want to estimate. $\mathbf{Y}$ is the observed image, $\mathbf{T}$ is the smoke transmission map, and $\mathbf{R}$ is the speckle map. $K_\text{spec}$ and $K_\text{smoke}$ are considered constant across pixels.
 
 
 \section{Prior on transmission map $\mathbf{T}$}
-To enforce spatial smoothness, we will penalize deviations in a local neighborhood. The MRF $\mathbf{T}$ is defined with a neighborhood system $\mathcal{N}^T := \lbrace \mathcal{N}_i^T \rbrace$, where $\mathcal{N}_i^T$ is the set of pixels in $5 \times 5$ patch centered at pixel $i$. The prior distribution is defined using potentials on all the cliques as follows
+\label{sec:modelT}
+The MRF $\mathbf{T} := \lbrace T_i \rbrace_{i=1}^{I}$ is defined with a neighborhood system $\mathcal{N}^T := \lbrace \mathcal{N}_i^T \rbrace$, where $\mathcal{N}_i^T$ is the set of pixels in $5 \times 5$ patch centered at pixel $i$. To enforce spatial smoothness, we will penalize deviations in a local neighborhood. The prior distribution is defined using potentials on all the cliques as follows
 \begin{align}
-    P(\mathbf{T}) = \frac{1}{Z} \exp \left( - \sum_{i=1}^{I} \sum_{j \in \mathcal{N}_i^T} \gamma_3 (T_i - T_j)^2 \right) \label{eqn:spatialsmoothness}
+    P(\mathbf{T}) = \frac{1}{Z} \exp \left( - \gamma_3 \sum_{i=1}^{I} \sum_{j \in \mathcal{N}_i^T} (T_i - T_j)^2 \right) \label{eqn:spatialsmoothness}
 \end{align}
 where the outer sum is performed over all pixels, $\gamma_3 \in \mathbb{R}^+$ is a free parameter, and $Z$ is the normalization constant.

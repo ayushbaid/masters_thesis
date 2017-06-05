@@ -214,6 +214,26 @@
   } % centering
 }
 
+\newcommand{\twoAcrossLabels}[6][0]{
+    \setlength{\tmpLength}{0.49\textwidth}
+    \setlength{\tmpLength}{0.37\tmpLength}
+    \centerline{
+        \begin{tabular}{cc}
+            \includegraphics[angle=#1,height=#4\tmpLength]{#2}
+            \vspace{-5pt}
+            \hspace{-13pt}
+            &
+            \includegraphics[angle=#1,height=#4\tmpLength]{#3}
+            \\
+            \small \mbox{#5}
+            \vspace{-1pt}
+            \hspace{-13pt}
+            &
+            \small \mbox{#6}
+        \end{tabular}
+    } % centering
+}
+
 
 \newcommand{\twoAcrossLabelsLarger}[5][0]{
   \setlength{\tmpLength}{0.95\textwidth}

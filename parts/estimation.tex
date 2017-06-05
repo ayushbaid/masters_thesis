@@ -1,77 +1,91 @@
 \chapter{Estimation}
 
-For our algorithm, we assume that we are provided with speckle label map $\mathbf{r}$, speckle color $K_{spec}$, and smoke color $K_{smoke}$. We will use maximum a posteriori probability (MAP) estimation for image $\mathbf{X}$.
+For our algorithm, we assume that we are provided with a speckle label map $\mathbf{r}$, speckle color $K_\text{spec}$, and smoke color $K_\text{smoke}$. We will use maximum aposteriori probability (MAP) estimation scheme for image $\mathbf{X}$. Given the speckle map $\mathbf{r}$, we remove the pixel locations of $\mathbf{y}$ where which are specular highlights, as they convey no information about the underlying image. We call the new image with holes in place of specular highlights as $\mathbf{\mathring y}$. The MAP estimate is
 
 \begin{align}
-\hat{\mathbf{x}} &= \argmax_\mathbf{x} P \left( \mathbf{x} | \mathbf{y}, \mathbf{r} \right) = \argmax_\mathbf{x} P \left( \mathbf{y} | \mathbf{x}, \mathbf{r} \right) P \left( \mathbf{x} \right) \label{eqn:simplemap}
+\hat{\mathbf{x}} &= \argmax_\mathbf{x} P \left( \mathbf{x} | \mathbf{\mathring y}, \mathbf{r} \right) = \argmax_\mathbf{x} P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{r} \right) P \left( \mathbf{x} \right) \label{eqn:simplemap}
 \end{align}
 
-The first part of the final term in \Eqref{eqn:simplemap} is the likelihood of observing the output $\mathbf{y}$. The second part is the prior probability of $\mathbf{x}$.
+The first part of the final term in \Eqref{eqn:simplemap} is the likelihood of observing the output $\mathbf{\mathring y}$. The second part is the prior probability of the image estimate $\mathbf{x}$.
 
 
-\section{Variational Bayesian Expectation Maximization}
+\section{Variational Bayesian expectation maximization}
 We will introduce smoke transmission map $\mathbf{T}$ and dictionary codes $\mathbf{S}$ as latent variables in the system. The aposterior probability is 
 \begin{align}
-P \left( \mathbf{y} | \mathbf{x}, \mathbf{r} \right) P \left( \mathbf{x} \right) &= \int_{\mathbf{t}, \mathbf{s} } P \left( \mathbf{y}, \mathbf{t}, \mathbf{x}, \mathbf{s} | \mathbf{r} \right)  \diff\mathbf{t} \diff \mathbf{s} \\
-&= \int_{\mathbf{t}, \mathbf{s}} P \left( \mathbf{y} | \mathbf{t}, \mathbf{x}, \mathbf{s},  \mathbf{r} \right)  P \left(\mathbf{x}, \mathbf{s} \right) P \left( \mathbf{t} \right) \diff\mathbf{t} \diff \mathbf{s} \label{eqn:mapDerive1}\\
-&= \int_{\mathbf{t}, \mathbf{s}} P \left( \mathbf{y} | \mathbf{t}, \mathbf{x},  \mathbf{r} \right)  P \left(\mathbf{x}, \mathbf{s} \right) P \left( \mathbf{t} \right) \diff\mathbf{t} \diff \mathbf{s} \label{eqn:mapDerive2}
+P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{r} \right) P \left( \mathbf{x} \right) &= \int_{\mathbf{t}, \mathbf{s} } P \left( \mathbf{\mathring y}, \mathbf{x}, \mathbf{s}, \mathbf{t} | \mathbf{r} \right) \diff \mathbf{s} \diff\mathbf{t} \\
+&= \int_{\mathbf{s}, \mathbf{t}} P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{s},  \mathbf{t}, \mathbf{r} \right)  P \left(\mathbf{x}, \mathbf{s} \right) P \left( \mathbf{t} \right) \diff\mathbf{s} \diff\mathbf{t} \label{eqn:mapDerive1}\\
+&= \int_{\mathbf{t}, \mathbf{s}} P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{t}, \mathbf{r} \right)  P \left(\mathbf{x}, \mathbf{s} \right) P \left( \mathbf{t} \right) \diff\mathbf{s} \diff\mathbf{t}  \label{eqn:mapDerive2}
 \end{align}
 \Eqref{eqn:mapDerive2} follows as $\mathbf{Y}$ is independent of $\mathbf{S}$, given $\mathbf{T}$ and $\mathbf{X}$ due to our image formation model.
 The final term in \Eqref{eqn:mapDerive2} has three components. The first one is the likelihood of the output being observed. The second and third component are priors on $\mathbf{X}, \mathbf{S}$ and $\mathbf{T}$.
 
-Due to our modeling of the noise as i.i.d. Gaussian, the log of the likelihood probability distribution turns out to be
+Due to our modeling of the noise as i.i.d. Gaussian, the log likelihood probability distribution turns out to be
 \begin{align}
-\log P \left( \mathbf{y}| \mathbf{x}, \mathbf{t}, \mathbf{r} \right) &= - \sum_{i | r_i = 0} \left( y_i - t_i x_i - (1-t_i) K_{smoke} \right)^2
+\log P \left( \mathbf{\mathring y}| \mathbf{x}, \mathbf{t}, \mathbf{r} \right) &= - \sum_{i | r_i = 0} \left( y_i - t_i x_i - (1-t_i) K_\text{smoke} \right)^2
 \end{align}
 
 
 \subsection{Expectation step}
-Let $\mathbf{x}^n$ be the estimate of the uncorrupted image after $n$ iterations. The $Q$ function in the next iteration is
+Let $\mathbf{x}^m$ be the estimate of the uncorrupted image after $m$ iterations. The $Q$ function defined for the next iteration is
 \begin{align}
-Q(\mathbf{x}; \mathbf{x^n}) &= \mathbb{E}_{ P \left( \mathbf{T}, \mathbf{S} | \mathbf{y}, \mathbf{x}^n, \mathbf{r} \right)} \left[ \log P \left( \mathbf{y}, \mathbf{x}, \mathbf{T}, \mathbf{S} | \mathbf{r} \right)\right] \label{eqn:Qvbem2}
+Q(\mathbf{x}; \mathbf{x}^m) &= \mathbb{E}_{ P \left( \mathbf{S}, \mathbf{T} | \mathbf{\mathring y}, \mathbf{x}^m, \mathbf{r} \right)} \left[ \log P \left( \mathbf{\mathring y}, \mathbf{x}, \mathbf{S}, \mathbf{T} | \mathbf{r} \right)\right] \nonumber \\
+&= \mathbb{E}_{ P \left( \mathbf{S}, \mathbf{T} | \mathbf{\mathring y}, \mathbf{x}^m, \mathbf{r} \right)} \left[ P \left( \mathbf{\mathring y}, \mathbf{T}| \mathbf{x}, \mathbf{r} \right) P \left( \mathbf{S} | \mathbf{x} \right) P \left( \mathbf{x} \right) \right] \label{eqn:Qvbem2}
 \end{align}
 
-Our image formation model leads to the following simplification in the posterior distribution over latent variables and the probability of the joint data
+The posterior probability over the latent variables can be written as
 \begin{align}
-P \left( \mathbf{T}, \mathbf{S} | \mathbf{y}, \mathbf{x}^n, \mathbf{r} \right) &= P \left( \mathbf{T} | \mathbf{y}, \mathbf{x}^n, \mathbf{r} \right) P \left( \mathbf{S} | \mathbf{x}^n \right) \label{eqn:latentPosterior}\\
-P \left( \mathbf{S} | \mathbf{x}^n\right) &= \prod_{i} P \left( S_i | \mathbf{x}^n \right) \label{eqn:obCodeFact} \\
-P \left( \mathbf{y}, \mathbf{x}, \mathbf{T}, \mathbf{S} | \mathbf{r} \right) &= P \left( \mathbf{y} | \mathbf{x}, \mathbf{T}, \mathbf{r} \right) P \left( \mathbf{S} | \mathbf{x} \right) P \left( \mathbf{X} \right) P \left( \mathbf{T} \right)
-\end{align}
-where the factorization in \Eqref{eqn:obCodeFact} is evident from \Eqref{eqn:xGivenS}.
-
-% TODO: introduce VB
-The expectation is analytically intractable to compute. We use variational factorization for each component in \Eqref{eqn:latentPosterior}. We assume pixel by pixel factorization for $\mathbf{T}$ and over each atom for $\lbrace S_i \rbrace$.
-\begin{align}
-    P \left( \mathbf{T} | \mathbf{y}, \mathbf{x}^n \right) &\approx \prod_{i=1}^{I} F_i \left( T_i | \mathbf{y}, \mathbf{x}^n \right) \label{eqn:vbFactT} \\
-    P \left( S_i | \mathbf{x}^n \right) &\approx \prod_{j} G_{ij} (S_{ij} | \mathbf{x}^n) \label{eqn:vbFactS}
-\end{align}
-where $F_i$ is the factor of $\mathbf{T}$ at pixel $i$, and $G_{ij}$ is the factor corresponding to $j^{th}$ coefficient of code vector $S_i$. $\lbrace F_i \rbrace$ are truncated Gaussians with support $\left[0, 1 \right]$, means $\lbrace \mu^\mathbf{T}_i \rbrace$,  standard deviations $\lbrace \sigma^\mathbf{T}_i \rbrace$. $\lbrace G_{ij}$ are Gaussian distributions with means $ \lbrace \mu^{\mathbf{S}}_{ij} \rbrace $ and standard deviation $ \lbrace \sigma^{\mathbf{S}}_{ij} \rbrace $ We have to optimize the factorization before solving for the $Q$ function. \Eqref{eqn:solveFactT} and \Eqref{eqn:solveFactS} are solved iteratively for optimum factors $ \lbrace F_i^* \rbrace $ and $ \lbrace G_{ij}^* \rbrace $ until convergence. $c_1$ and $c_2$ are additive constants which will be absorbed in normalization of factor distributions.
-\begin{align}
-    \log F_i^* (T_i) &= \mathbb{E}_{ \prod_{k \neq i} F_k \left( T_k | \mathbf{y}, \mathbf{x}^n \right) } \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + c_1 \label{eqn:solveFactT} \\
-    \log G_{ij}^* \left( S_{ij} \right) &= \mathbb{E}_{ \prod_{k \neq j} G_{ik} \left( S_{ij} | \mathbf{x}^n \right) } \left[ \log P \left( S_i | \mathbf{x}^n \right)\right] + c_2 \label{eqn:solveFactS}
+P \left( \mathbf{S}, \mathbf{T} | \mathbf{y}, \mathbf{x}^m, \mathbf{r} \right) &= P \left( \mathbf{T} | \mathbf{y}, \mathbf{x}^m, \mathbf{r} \right) P \left( \mathbf{S} | \mathbf{x}^m \right) \label{eqn:latentPosterior}
 \end{align}
 
-The parameters of optimum factors are derived in \Appref{app:factorParamsT} and \Appref{app:factorParamsS}.  Once we have the optimum factorization, solving for the $Q$ function becomes simple. The simplified function is
+The codes $S_i$ for $\acute{I}$ full patches in $\mathbf{X}$ are independent of each other. Hence
 \begin{align}
-Q(\mathbf{x}; \mathbf{x}^n) = \mathbb{E}_{ P \left( \mathbf{T} | \mathbf{x}^n, \mathbf{y}, \mathbf{r} \right)} \log \left[ P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + \sum_i \mathbb{E}_{ P \left( S_i | \mathbf{x}^n \right)} \left[ \log P \left( S_i | \mathbf{X} \right) \right] + \log P \left( \mathbf{X} \right) \label{eqn:QSimplified} 
+P \left( \mathbf{S} | \mathbf{x}^m\right) &= \prod_{i=1}^{\acute{I}} P \left( S_i | \mathbf{x}^m \right) \label{eqn:obCodeFact} 
 \end{align}
 
-We will substitute the factorization assumed on the posterior distribution of latent variables $\mathbf{T}$ and $\mathbf{S}$.
+The simplified expression for $Q\left( \cdot \right)$ is
 \begin{align}
-\mathbb{E}_{P( \mathbf{T} | \mathbf{y}, \mathbf{x^n})} \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] &= \mathbb{E}_{ \prod_{i=1}^{I} F^*_i (T_i | \mathbf{y}, \mathbf{x}^n) } \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] \label{eqn:subFactorT} \\
-%
-\mathbb{E}_{ P \left( S_i | \mathbf{x}^n \right)} \left[ \log P \left( S_i | \mathbf{X} \right) \right] &= \mathbb{E}_{ \prod_{j} G^*_{ij} \left( S_{ij} | \mathbf{x}^n \right) } \left[ \log P \left( S_i | \mathbf{X} \right) \right] \label{eqn:subFactorS}
+Q(\mathbf{x}; \mathbf{x}^m) = &\mathbb{E}_{ P \left( \mathbf{T} | \mathbf{\mathring y}, \mathbf{x}^m, \mathbf{r} \right)} \log \left[ P \left( \mathbf{\mathring y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] 
++ \sum_i \mathbb{E}_{ P \left( S_i | \mathbf{x}^m \right)} \left[ \log P \left( S_i | \mathbf{x} \right) \right]
++ \log P \left( \mathbf{x} \right) \label{eqn:QSimplified} 
 \end{align}
 
-\Eqref{eqn:subFactorT} is solved by substituting $\mu^\mathbf{T}_i$ for $T_i$, $\left( \mu^\mathbf{T}_i \right)^2 + \left( \sigma^\mathbf{T}_i \right)^2$ for $T_i^2$ and $\mu^\mathbf{T}_i \mu^\mathbf{T}_j $ for $T_i T_j$. Similarly \Eqref{eqn:subFactorS} is solved by substituting $\mu^\mathbf{S}_{ij}$ for $S_{ij}$.
+The expectations in \Eqref{eqn:QSimplified} are analytically intractable. We use variational factorization for the latent variables $\mathbf{S}$ and $\mathbf{T}$. The posterior probability for $\mathbf{T}$ is factorized over each pixel in the image, and the posterior probability for $\mathbf{S}$ is factorized over coefficient corresponding to each of the $J$ atoms of dictionary $\mathbf{D}$.
+\begin{align}
+P \left( \mathbf{T} | \mathbf{\mathring y}, \mathbf{x}^m, \mathbf{r} \right) &\approx \prod_{i=1}^{I} G^\dagger_i \left( T_i | \mathbf{\mathring y}, \mathbf{x}^m, \mathbf{r} \right) \label{eqn:vbFactT} \\
+P \left( S_i | \mathbf{x}^m \right) &\approx \prod_{j}^{J} G_{ij} (S_{ij} | \mathbf{x}^m) \label{eqn:vbFactS}
+\end{align}
+
+$F_i$ is the factor of $\mathbf{T}$ at pixel $i$, and $G_{ij}$ is the factor corresponding to $j^{th}$ coefficient of code vector $S_i$. $\lbrace F_i \rbrace_{i=1}^{I}$ are truncated Gaussians with support $\left[0, 1 \right]$, means $\lbrace \mu^\mathbf{T}_i \rbrace$,  standard deviations $\lbrace \sigma^\mathbf{T}_i \rbrace$. $\lbrace G_{ij} \rbrace_{j=1}^{J}$ are Gaussian distributions with means $ \lbrace \mu^{\mathbf{S}}_{ij} \rbrace $ and standard deviation $ \lbrace \sigma^{\mathbf{S}}_{ij} \rbrace $ We have to optimize the factorization before solving for the $Q$ function. Given all other factors, the optimum factor for $G^{\dagger*}_i$ and $G^*_{ij}$ are derived as,
+\begin{align}
+\log G^{\dagger*}_i (T_i) &= \mathbb{E}_{ \prod_{k \neq i} G^{\dagger*}_k \left( T_k | \mathbf{\mathring y}, \mathbf{x}^m, \mathbf{r} \right) } \left[ \log P \left( \mathbf{\mathring y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + c_1 \label{eqn:solveFactT} \\
+\log G_{ij}^* \left( S_{ij} \right) &= \mathbb{E}_{ \prod_{k \neq j} G^*_{ik} \left( S_{ik} | \mathbf{x}^m \right) } \left[ \log P \left( S_i | \mathbf{x} \right)\right] + c_2 \label{eqn:solveFactS}
+\end{align}
+
+\Eqref{eqn:solveFactT} and \Eqref{eqn:solveFactS} are solved iteratively for optimum factors $ \lbrace F_i^* \rbrace $ and $ \lbrace G_{ij}^* \rbrace $ until convergence. $c_1$ and $c_2$ are additive constants which will be absorbed in normalization of factor distributions. The parameters of optimum factors are derived in \Appref{app:factorParamsT} and \Appref{app:factorParamsS}.  Once we have the optimum factorization, solving for the $Q$ function becomes simple. The simplified function is
+\begin{align}
+Q(\mathbf{x}; \mathbf{x}^m) = \mathbb{E}_{ \prod_{i=1}^{I} F^*_i (T_i | \mathbf{y}, \mathbf{x}^m) } \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + \sum_i \mathbb{E}_{ \prod_{j=1}^{J} G^*_{ij} \left( S_{ij} | \mathbf{x}^m \right) } \left[ \log P \left( S_i | \mathbf{x} \right) \right] + \log P \left( \mathbf{x} \right)
+\end{align}
+This expression is simplified by substituting $\mu^\mathbf{T}_i$ for $T_i$, $\left( \mu^\mathbf{T}_i \right)^2 + \left( \sigma^\mathbf{T}_i \right)^2$ for $T_i^2$ and $\mu^\mathbf{T}_i \mu^\mathbf{T}_j $ for $T_i T_j$, and $\mu^\mathbf{S}_{ij}$ for $S_{ij}$ to get an expression with $\mathbf{x}$ as the variable.
 
 
 \subsection{M step}
-In this step, we will maximize $Q(\mathbf{x}; \mathbf{x}^n)$ with respect to $\mathbf{x}$ to obtain a new estimate $\mathbf{x}^{n+1}$. The optimization in \Eqref{eqn:mStep} is solved using adaptive gradient descent.
+The final expression for $Q \left( \cdot \right)$ is
+\begin{equation}
+\begin{split}
+Q\left( \mathbf{x}; \mathbf{x}^m \right) =  &-0.5 \gamma_1 \mathbf{\bar{x}}^\intercal_i \left( \mathbf{\bar{x}}_i -  \mathbf{D} \mu^\mathbf{S}_i \right) - \log \left( \gamma_2 J_\text{dist}\left( \mathbf{x} \right) \right) \\
+&- \frac{1}{2 \sigma^2} \sum_{\{i | r_i = 0 \}}  \left(
+\left(\mu^\mathbf{T}_i\right)^2 + \left(\sigma^\mathbf{T}_i\right)^2\right) \left(x_i - K_\text{smoke}\right)^2 \\
+&- 2 \left(y_i - K_\text{smoke}\right) \mu^\mathbf{T}_i \left(x_i - K_\text{smoke} \right) + \delta'
+\end{split}
+\end{equation}
+where $\delta'$ is independent of $\mathbf{x}$.
+
+In this step, we will maximize $Q(\mathbf{x}; \mathbf{x}^m)$ with respect to $\mathbf{x}$ to obtain a new estimate $\mathbf{x}^{m+1}$. The next estimate is given by
 \begin{align}
-    \mathbf{x}^{n+1} &= \argmax_{x} Q \left( \mathbf{x}; \mathbf{x}^{n+1} \right) \label{eqn:mStep}
+    \mathbf{x}^{m+1} &= \argmax_{\mathbf{x}} Q \left( \mathbf{x}; \mathbf{x}^{m+1} \right) \label{eqn:mStep}
 \end{align}
 
+This optimization problem is solved using projected gradient descent with adaptive step size.
 
 
 
