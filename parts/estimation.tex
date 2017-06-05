@@ -10,11 +10,11 @@ The first part of the final term in \Eqref{eqn:simplemap} is the likelihood of o
 
 
 \section{Variational Bayesian expectation maximization}
-We will introduce smoke transmission map $\mathbf{T}$ and dictionary codes $\mathbf{S}$ as latent variables in the system. The aposterior probability is 
+We will introduce smoke transmission map $\mathbf{T}$ and dictionary coding $\mathbf{S}$ as latent variables in the system. The posterior probability is 
 \begin{align}
-P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{r} \right) P \left( \mathbf{x} \right) &= \int_{\mathbf{t}, \mathbf{s} } P \left( \mathbf{\mathring y}, \mathbf{x}, \mathbf{s}, \mathbf{t} | \mathbf{r} \right) \diff \mathbf{s} \diff\mathbf{t} \\
+P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{r} \right) P \left( \mathbf{x} \right) &= \int_{\mathbf{s}, \mathbf{t}} P \left( \mathbf{\mathring y}, \mathbf{x}, \mathbf{s}, \mathbf{t} | \mathbf{r} \right) \diff \mathbf{s} \diff\mathbf{t} \\
 &= \int_{\mathbf{s}, \mathbf{t}} P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{s},  \mathbf{t}, \mathbf{r} \right)  P \left(\mathbf{x}, \mathbf{s} \right) P \left( \mathbf{t} \right) \diff\mathbf{s} \diff\mathbf{t} \label{eqn:mapDerive1}\\
-&= \int_{\mathbf{t}, \mathbf{s}} P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{t}, \mathbf{r} \right)  P \left(\mathbf{x}, \mathbf{s} \right) P \left( \mathbf{t} \right) \diff\mathbf{s} \diff\mathbf{t}  \label{eqn:mapDerive2}
+&= \int_{\mathbf{s}, \mathbf{t}} P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{t}, \mathbf{r} \right)  P \left(\mathbf{x}, \mathbf{s} \right) P \left( \mathbf{t} \right) \diff\mathbf{s} \diff\mathbf{t}  \label{eqn:mapDerive2}
 \end{align}
 \Eqref{eqn:mapDerive2} follows as $\mathbf{Y}$ is independent of $\mathbf{S}$, given $\mathbf{T}$ and $\mathbf{X}$ due to our image formation model.
 The final term in \Eqref{eqn:mapDerive2} has three components. The first one is the likelihood of the output being observed. The second and third component are priors on $\mathbf{X}, \mathbf{S}$ and $\mathbf{T}$.
@@ -37,15 +37,15 @@ The posterior probability over the latent variables can be written as
 P \left( \mathbf{S}, \mathbf{T} | \mathbf{y}, \mathbf{x}^m, \mathbf{r} \right) &= P \left( \mathbf{T} | \mathbf{y}, \mathbf{x}^m, \mathbf{r} \right) P \left( \mathbf{S} | \mathbf{x}^m \right) \label{eqn:latentPosterior}
 \end{align}
 
-The codes $S_i$ for $\acute{I}$ full patches in $\mathbf{X}$ are independent of each other. Hence
+The codes $S_i$ for $I'$ full patches in $\mathbf{X}$ are independent of each other. Hence
 \begin{align}
-P \left( \mathbf{S} | \mathbf{x}^m\right) &= \prod_{i=1}^{\acute{I}} P \left( S_i | \mathbf{x}^m \right) \label{eqn:obCodeFact} 
+P \left( \mathbf{S} | \mathbf{x}^m\right) &= \prod_{i=1}^{I'} P \left( S_i | \mathbf{x}^m \right) \label{eqn:obCodeFact} 
 \end{align}
 
 The simplified expression for $Q\left( \cdot \right)$ is
 \begin{align}
 Q(\mathbf{x}; \mathbf{x}^m) = &\mathbb{E}_{ P \left( \mathbf{T} | \mathbf{\mathring y}, \mathbf{x}^m, \mathbf{r} \right)} \log \left[ P \left( \mathbf{\mathring y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] 
-+ \sum_i \mathbb{E}_{ P \left( S_i | \mathbf{x}^m \right)} \left[ \log P \left( S_i | \mathbf{x} \right) \right]
++ \sum_{i=1}^{I'} \mathbb{E}_{ P \left( S_i | \mathbf{x}^m \right)} \left[ \log P \left( S_i | \mathbf{x} \right) \right]
 + \log P \left( \mathbf{x} \right) \label{eqn:QSimplified} 
 \end{align}
 
@@ -55,13 +55,13 @@ P \left( \mathbf{T} | \mathbf{\mathring y}, \mathbf{x}^m, \mathbf{r} \right) &\a
 P \left( S_i | \mathbf{x}^m \right) &\approx \prod_{j}^{J} G_{ij} (S_{ij} | \mathbf{x}^m) \label{eqn:vbFactS}
 \end{align}
 
-$F_i$ is the factor of $\mathbf{T}$ at pixel $i$, and $G_{ij}$ is the factor corresponding to $j^{th}$ coefficient of code vector $S_i$. $\lbrace F_i \rbrace_{i=1}^{I}$ are truncated Gaussians with support $\left[0, 1 \right]$, means $\lbrace \mu^\mathbf{T}_i \rbrace$,  standard deviations $\lbrace \sigma^\mathbf{T}_i \rbrace$. $\lbrace G_{ij} \rbrace_{j=1}^{J}$ are Gaussian distributions with means $ \lbrace \mu^{\mathbf{S}}_{ij} \rbrace $ and standard deviation $ \lbrace \sigma^{\mathbf{S}}_{ij} \rbrace $ We have to optimize the factorization before solving for the $Q$ function. Given all other factors, the optimum factor for $G^{\dagger*}_i$ and $G^*_{ij}$ are derived as,
+$G^\dagger_i$ is the factor of $\mathbf{T}$ at pixel $i$, and $G_{ij}$ is the factor corresponding to $j^{th}$ coefficient of code vector $S_i$. $\lbrace G^\dagger_i \rbrace_{i=1}^{I}$ are truncated Gaussians with support $\left[0, 1 \right]$, means $\lbrace \mu^\mathbf{T}_i \rbrace$,  standard deviations $\lbrace \sigma^\mathbf{T}_i \rbrace$. $\lbrace G_{ij} \rbrace_{j=1}^{J}$ are Gaussian distributions with means $ \lbrace \mu^{\mathbf{S}}_{ij} \rbrace $ and standard deviation $ \lbrace \sigma^{\mathbf{S}}_{ij} \rbrace $. We have to optimize the factorization before solving for the $Q$ function. Given all other factors, the optimum factor for $G^{\dagger*}_i$ and $G^*_{ij}$ are derived as
 \begin{align}
-\log G^{\dagger*}_i (T_i) &= \mathbb{E}_{ \prod_{k \neq i} G^{\dagger*}_k \left( T_k | \mathbf{\mathring y}, \mathbf{x}^m, \mathbf{r} \right) } \left[ \log P \left( \mathbf{\mathring y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + c_1 \label{eqn:solveFactT} \\
-\log G_{ij}^* \left( S_{ij} \right) &= \mathbb{E}_{ \prod_{k \neq j} G^*_{ik} \left( S_{ik} | \mathbf{x}^m \right) } \left[ \log P \left( S_i | \mathbf{x} \right)\right] + c_2 \label{eqn:solveFactS}
+\log G^{\dagger*}_i (T_i) &= \mathbb{E}_{ \prod_{k \neq i} G^{\dagger*}_k \left( T_k | \mathbf{\mathring y}, \mathbf{x}^m, \mathbf{r} \right) } \left[ \log P \left( \mathbf{\mathring y}, \mathbf{T} | \mathbf{x}^m, \mathbf{r} \right) \right] + c_1 \label{eqn:solveFactT} \\
+\log G_{ij}^* \left( S_{ij} \right) &= \mathbb{E}_{ \prod_{k \neq j} G^*_{ik} \left( S_{ik} | \mathbf{x}^m \right) } \left[ \log P \left( S_i | \mathbf{x}^m \right)\right] + c_2 \label{eqn:solveFactS}
 \end{align}
 
-\Eqref{eqn:solveFactT} and \Eqref{eqn:solveFactS} are solved iteratively for optimum factors $ \lbrace F_i^* \rbrace $ and $ \lbrace G_{ij}^* \rbrace $ until convergence. $c_1$ and $c_2$ are additive constants which will be absorbed in normalization of factor distributions. The parameters of optimum factors are derived in \Appref{app:factorParamsT} and \Appref{app:factorParamsS}.  Once we have the optimum factorization, solving for the $Q$ function becomes simple. The simplified function is
+\Eqref{eqn:solveFactT} and \Eqref{eqn:solveFactS} are solved iteratively for optimum factors $ \lbrace G^{\dagger*}_i \rbrace $ and $ \lbrace G_{ij}^* \rbrace $ until convergence. $c_1$ and $c_2$ are additive constants which will be absorbed in normalization of factor distributions. The parameters of optimum factors are derived in \Appref{app:factorParamsT} and \Appref{app:factorParamsS}.  Once we have the optimum factorization, solving for the $Q$ function becomes simple. The simplified function is
 \begin{align}
 Q(\mathbf{x}; \mathbf{x}^m) = \mathbb{E}_{ \prod_{i=1}^{I} F^*_i (T_i | \mathbf{y}, \mathbf{x}^m) } \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + \sum_i \mathbb{E}_{ \prod_{j=1}^{J} G^*_{ij} \left( S_{ij} | \mathbf{x}^m \right) } \left[ \log P \left( S_i | \mathbf{x} \right) \right] + \log P \left( \mathbf{x} \right)
 \end{align}

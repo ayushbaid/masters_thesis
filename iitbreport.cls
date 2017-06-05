@@ -134,7 +134,7 @@
 \setlength{\evensidemargin}{20mm}
 \else
 \setlength{\oddsidemargin}{30mm}  
-\setlength{\evensidemargin}{30mm} 
+\setlength{\evensidemargin}{20mm} 
 \fi
 % total width for two side: 160+30+20=210 mm
 

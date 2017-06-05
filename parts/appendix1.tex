@@ -6,11 +6,11 @@
 We will now derive the parameters of the optimal factorization for $G^\dagger_i$.
 \begin{align}
 \begin{split}
-\log P \left( \mathbf{\mathring y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) = - \sum_{i: r_i = 0} &\left( \mathring{y}_i - T_i x_i - (1-T_i) K_\text{smoke} \right)^2 \\ &- \gamma_3 \sum_{i} \sum_{j \in \mathcal{N}_i^T} (T_i - T_j)^2
+\log P \left( \mathbf{\mathring y}, \mathbf{T} | \mathbf{x}^m, \mathbf{r} \right) = - \sum_{i: r_i = 0} &\left( \mathring{y}_i - T_i x^m_i - (1-T_i) K_\text{smoke} \right)^2 \\ &- \gamma_3 \sum_{i} \sum_{j \in \mathcal{N}_i^T} (T_i - T_j)^2
 \end{split}
 \label{eqn:derive_1_factvbem1}
 \end{align}
-To get optimal factor in \Eqref{eqn:solveFactT}, we replace $ \lbrace T_k | k \neq i \rbrace $ with current optimum means $ \lbrace \mu^\mathbf{T}_k \rbrace$ and replace $ \lbrace T_k^2 | k \neq i \rbrace $ with $ \lbrace \left(\mu^\mathbf{T}_j\right)^2 + \left(\sigma^\mathbf{T}_j\right)^2 \rbrace $ in \Eqref{eqn:derive_1_factvbem1}. This will result in a quadratic equation in $T_i$, from which the parameters $ \left( \mu^\mathbf{T}_i, \sigma^\mathbf{T}_i \right) $ of truncated Gaussian factor $G^\dagger_i$ can be solved \cite{johnson1994continuous}. The final expression for mean and standard deviation are is derived as
+To get optimal factor in \Eqref{eqn:solveFactT}, we replace $ \lbrace T_k | k \neq i \rbrace $ with current optimum means $ \lbrace \mu^\mathbf{T}_k \rbrace$ and replace $ \lbrace T_k^2 | k \neq i \rbrace $ with $ \lbrace \left(\mu^\mathbf{T}_j\right)^2 + \left(\sigma^\mathbf{T}_j\right)^2 \rbrace $ in \Eqref{eqn:derive_1_factvbem1}. This will result in a quadratic equation in $T_i$, from which the parameters $ \left( \mu^\mathbf{T}_i, \sigma^\mathbf{T}_i \right) $ of truncated Gaussian factor $G^{\dagger*}_i$ can be solved \cite{johnson1994continuous}. The final expression for mean and standard deviation are is derived as
 \begin{align}
 \mu^\mathbf{T}_i &= \bar\mu_i + \bar\sigma_i \frac{\phi\left(\alpha_i \right) - \phi\left(\beta_i \right)}{\Phi\left(\beta_i \right) - \Phi\left(\alpha_i \right)} \label{eqn:mean_t_vbem1} \\
 %
@@ -18,8 +18,8 @@ To get optimal factor in \Eqref{eqn:solveFactT}, we replace $ \lbrace T_k | k \n
 \end{align}
 where $\phi$ and $\Phi$ are the PDF and the CDF of a standard normal distribution, and
 \begin{align*}
-\bar{\mu}_i &= \frac{ \left( 1-r_i \right) \left( y_i - K_\text{smoke} \right) \left( x_i - K_\text{smoke} \right) + 2 \gamma_3 \sum_{ j \in \mathcal{N}_i^T } \mu_j } { \left( 1 - r_i \right) \left( x_i - K_\text{smoke} \right)^2 + 2 \gamma_3}, \\
-\bar{\sigma}_i &= \frac{ 1 } { \sqrt{2} }\left( \left( x_i - K_\text{smoke} \right)^2 + 2 \gamma_3 \right)^{-\frac{1}{2}},  \\
+\bar{\mu}_i &= \frac{ \left( 1-r_i \right) \left( y_i - K_\text{smoke} \right) \left( x^m_i - K_\text{smoke} \right) + 2 \gamma_3 \sum_{ j \in \mathcal{N}_i^T } \mu_j } { \left( 1 - r_i \right) \left( x^m_i - K_\text{smoke} \right)^2 + 2 \gamma_3}, \\
+\bar{\sigma}_i &= \frac{ 1 } { \sqrt{2} }\left( \left( x^m_i - K_\text{smoke} \right)^2 + 2 \gamma_3 \right)^{-\frac{1}{2}},  \\
 \alpha_i &= -\frac{\bar\mu_i}{\bar\sigma_i}, \text{and} \\
 \beta_i &= \frac{1-\bar\mu_i}{\bar\sigma_i}.
 \end{align*}
@@ -30,7 +30,7 @@ where $\phi$ and $\Phi$ are the PDF and the CDF of a standard normal distributio
 
 With a prelearnt dictionary $\mathbf{D} := \lbrace D_j \rbrace_{j=1}^{J}$, the probability distribution on the sparse code $S_i$ for patch $i$ of $\mathbf{x}$ is
 \begin{align}
-\log P(S_{ij} | \mathbf{x}) &\propto - \| \mathbf{\bar{x}}_i - \mathbf{D} S_i \|_2^2 - \lambda \| S_i \|_1 \label{eqn:deriveSFactors}
+\log P(S_{ij} | \mathbf{x}^m) &\propto - \| \mathbf{\bar{x}}^m_i - \mathbf{D} S_i \|_2^2 - \lambda \| S_i \|_1 \label{eqn:deriveSFactors}
 \end{align}
 
 Due to the absolute value operator in \Eqref{eqn:deriveSFactors}, we are not able to fit any standard distribution for $G_{ij}$. We therefore replace L1 regularization with weighted L2 regularization. Iterative reweighted least squares (IRLS) can be used to approximate the solution of a sparse solution due to L1 regularization with an appropriate choice of weights \cite{chartrand2008iteratively}. Specifically, if the estimate after $m$ iterations if $S^m_i$, then the next iteration gives the solution as
@@ -39,14 +39,14 @@ S^{m+1}_i = \argmin_{S_i} \| \mathbf{\bar{x}}_i - \mathbf{D} S_i \|^2_2 + \sum_{
 \end{align}
 where the weight $w_{ij} = 1/| S^m_{ij} |$.
 
-We use this development to propose a strategy for factorization. At each iteration, set the weights as the inverse of the absolute of the mean of the factors, followed by solving for optimum factors until convergence. When we have the weights $\mathbf{\Gamma}$ fixed, the new probability distribution (intead of \Eqref{eqn:deriveSFactors}) is
+We use this development to propose a strategy for factorization. At each iteration, we set the weights as the inverse of the absolute of the mean of the factors, followed by solving for optimum factors until convergence. When we have the weights $\mathbf{\Gamma}$ fixed, the new probability distribution (instead of \Eqref{eqn:deriveSFactors}) is
 \begin{align}
-\log P(S_{ij} | \mathbf{x}; \mathbf{\Gamma}) &= - \| \mathbf{\bar{x}}_i - \mathbf{D} S_i \|_2^2 - \lambda \Gamma_{ij} S_{ij}^2 + c \label{eqn:deriveSFactors2}
+\log P(S_{ij} | \mathbf{x}^m; \mathbf{\Gamma}) &= - \| \mathbf{\bar{x}}^m_i - \mathbf{D} S_i \|_2^2 - \lambda \Gamma_{ij} S_{ij}^2 + c \label{eqn:deriveSFactors2}
 \end{align}
 where c is a constant.
 
 We solve \Eqref{eqn:solveFactS} by substituting $\lbrace S_{ik} | k \neq j \rbrace$ with $\mu^\mathbf{S}_{ik}$ in \Eqref{eqn:deriveSFactors} to obtain a quadratic in $S_{ij}$ sans an additive constant. We can then obtain the mean and sigma of the optimal Gaussian factor $G_{ij}$ as
 \begin{align}
-\mu^\mathbf{S}_{ij} &= \frac{ D_j^\intercal \left( \mathbf{\bar{x}}_i - \sum_{k \neq j} D_k \mu^\mathbf{S}_{ik} \right) }{ D_j^\intercal D_j + 2 \lambda \Gamma_{ij} } \\
+\mu^\mathbf{S}_{ij} &= \frac{ D_j^\intercal \left( \mathbf{\bar{x}}^m_i - \sum_{k \neq j} D_k \mu^\mathbf{S}_{ik} \right) }{ D_j^\intercal D_j + 2 \lambda \Gamma_{ij} } \\
 \sigma^\mathbf{S}_{ij} &= \frac{1}{\sqrt{ D_j^\intercal D_j + 2 \lambda \Gamma_{ij} }}
 \end{align}
