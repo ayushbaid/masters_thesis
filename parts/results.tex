@@ -6,12 +6,12 @@ In this chapter, we compare our methods with the existing literature. To the bes
     \item Noise removal with edge preserving bilateral filtering, followed by smoke removal with He PAMI11 \cite{he2011dark} and anisotropic diffusion inpainting.
 \end{enumerate}
 
-We observe the qualitative aspect of output images such as texture, presence of noise, and accuracy and naturalness of colors in the output. We also use 4 quantitative measures, which are (1) mean root mean square difference (RRMSE); (2)sum of channel-wise mean structure similarity (SSIM) index across RGB channels; (3) sum of channel-wise mean quality index based on local variance (QILV) across RGB channels; (4) sum of channel-wise chi-squared distance between histograms along the 3 channels in the LMS colorspace. These metrics cover a wide range of features such as noise level, blur, structure, and color distribution. RRMSE, chi-squared distance should be low and QILV, SSIM should be high for the best method.
+We observe the qualitative aspect of output images such as texture, presence of noise, and accuracy and naturalness of colors in the output. We also use 4 quantitative measures, which are (1) relative root mean square difference (RRMSE); (2)sum of channel-wise mean structure similarity index measure (SSIM) across RGB channels; (3) sum of channel-wise mean quality index based on local variance (QILV) across RGB channels; (4) sum of channel-wise chi-squared distance between histograms along the 3 channels in the LMS colorspace. These metrics cover a wide range of features such as noise level, blur, structure, and color distribution. RRMSE, chi-squared distance should be low and QILV, SSIM should be high for the best method.
 
 We present examples and quantitative metrics by processing synthetically corrupted simulated data and high quality laparoscopy data in the following sections.
 
 \section{Experiment details}
-Proposed as well as competing methods are tuned for best performance at 3 percent noise level. Our method has three free parameters ($\gamma_1$,  $\gamma_2$ and $\gamma_3$) which are to be tuned. For synthetic corruption, we use 3 transmission coefficient maps and 20 specularity maps. We add i.i.d. Gaussian noise of standard deviation ranging from 0 \% to 7\%. We get 3 times 5 transmission coefficient maps using 5 scalar multiples or smoke levels. 
+Proposed as well as competing methods are tuned for best performance at 3 percent noise level. Our method has three free parameters ($\gamma_1$,  $\gamma_2$ and $\gamma_3$) which are to be tuned. For synthetic corruption, we use 3 transmission coefficient maps and 20 specularity maps. We get 3 times 5 transmission coefficient maps using 5 scalar multiples or smoke levels. We add i.i.d. Gaussian noise of standard deviation ranging from 0 \% to 7\%. 
 
 \section{Synthetic corruption on simulated data}
 
@@ -70,10 +70,10 @@ We perform quantitative benchmarking using 4 metrics. The results are presented 
 We now perform validation on laparoscopy data. We take high quality laparoscopy images, corrupt them synthetically, and then process using different algorithms compare the outputs with the ground truth. We run experiments on 6 image, where each image is corrupted with 90 different corruption combinations.
 
 \begin{figure}[!h]
-    \twoAcrossLabels {Pics/pgt/shortlist/exp6/box-exp6-x1_ground_truth} {Pics/pgt/shortlist/exp6/box-exp6-x2_corrupt} {1.8} {(a)} {(b)}
-    \twoAcrossLabels {Pics/pgt/shortlist/exp6/box-exp6-x7_vb} {Pics/pgt/shortlist/exp6/box-exp6-x3_seq} {1.8} {(c)} {(d)}
-    \oneWidthLabel {Pics/pgt/shortlist/exp6/box-exp6-x5_wiener.png} {1.8} {(e)}
-    \fourAcrossLabels {Pics/pgt/shortlist/exp6/crop-exp6-x1_ground_truth} {Pics/pgt/shortlist/exp6/crop-exp6-x2_corrupt} {Pics/pgt/shortlist/exp6/crop-exp6-x7_vb} {Pics/pgt/shortlist/exp6/crop-exp6-x3_seq}  {(a1)} {(b1)} {(c1)} {(d1)}
+    \twoAcrossLabels {Pics/pgt/shortlist/exp10/box-exp10-x1_ground_truth} {Pics/pgt/shortlist/exp10/box-exp10-x2_corrupt} {1.8} {(a)} {(b)}
+    \twoAcrossLabels {Pics/pgt/shortlist/exp10/box-exp10-x7_vb} {Pics/pgt/shortlist/exp10/box-exp10-x3_seq} {1.8} {(c)} {(d)}
+    \oneWidthLabel {Pics/pgt/shortlist/exp10/box-exp10-x5_wiener.png} {1.8} {(e)}
+    \fourAcrossLabels {Pics/pgt/shortlist/exp10/crop-exp10-x1_ground_truth} {Pics/pgt/shortlist/exp10/crop-exp10-x2_corrupt} {Pics/pgt/shortlist/exp10/crop-exp10-x7_vb} {Pics/pgt/shortlist/exp10/crop-exp10-x3_seq}  {(a1)} {(b1)} {(c1)} {(d1)}
     \caption
     {
         %
@@ -81,9 +81,9 @@ We now perform validation on laparoscopy data. We take high quality laparoscopy 
         %
         {\bf (a)}~High quality laparoscopy image (color component values $\in [0,255]$).
         %
-        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke, specularities, and low noise ($\sigma$ = 5).
+        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke, specularities, and moderate noise ($\sigma$ = 5).
         % 
-        Results of processing image {\bf (b)}, using:
+        Results of processing image {\bf (b)} using:
         %
         {\bf (c)}~{\em our method};
         %
@@ -97,10 +97,10 @@ We now perform validation on laparoscopy data. We take high quality laparoscopy 
 \end{figure}
 
 \begin{figure}[!h]
-    \twoAcrossLabels {Pics/pgt/shortlist/exp10/box-exp10-x1_ground_truth} {Pics/pgt/shortlist/exp10/box-exp10-x2_corrupt} {1.8} {(a)} {(b)}
-    \twoAcrossLabels {Pics/pgt/shortlist/exp10/box-exp10-x7_vb} {Pics/pgt/shortlist/exp10/box-exp10-x3_seq} {1.8} {(c)} {(d)}
-    \oneWidthLabel {Pics/pgt/shortlist/exp10/box-exp10-x5_wiener.png} {1.8} {(e)}
-    \fourAcrossLabels {Pics/pgt/shortlist/exp10/crop-exp10-x1_ground_truth} {Pics/pgt/shortlist/exp10/crop-exp10-x2_corrupt} {Pics/pgt/shortlist/exp10/crop-exp10-x7_vb} {Pics/pgt/shortlist/exp10/crop-exp10-x3_seq}  {(a1)} {(b1)} {(c1)} {(d1)}
+    \twoAcrossLabels {Pics/pgt/shortlist/exp6/box-exp6-x1_ground_truth} {Pics/pgt/shortlist/exp6/box-exp6-x2_corrupt} {1.8} {(a)} {(b)}
+    \twoAcrossLabels {Pics/pgt/shortlist/exp6/box-exp6-x7_vb} {Pics/pgt/shortlist/exp6/box-exp6-x3_seq} {1.8} {(c)} {(d)}
+    \oneWidthLabel {Pics/pgt/shortlist/exp6/box-exp6-x5_wiener.png} {1.8} {(e)}
+    \fourAcrossLabels {Pics/pgt/shortlist/exp6/crop-exp6-x1_ground_truth} {Pics/pgt/shortlist/exp6/crop-exp6-x2_corrupt} {Pics/pgt/shortlist/exp6/crop-exp6-x7_vb} {Pics/pgt/shortlist/exp6/crop-exp6-x3_seq}  {(a1)} {(b1)} {(c1)} {(d1)}
     \caption
     {
         %
@@ -108,9 +108,9 @@ We now perform validation on laparoscopy data. We take high quality laparoscopy 
         %
         {\bf (a)}~High quality laparoscopy image (color component values $\in [0,255]$).
         %
-        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke, specularities, and low noise ($\sigma$ = 5).
+        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke, specularities, and moderate noise ($\sigma$ = 5).
         % 
-        Results of processing image {\bf (b)}, using:
+        Results of processing image {\bf (b)} using:
         %
         {\bf (c)}~{\em our method};
         %
@@ -134,9 +134,9 @@ We now perform validation on laparoscopy data. We take high quality laparoscopy 
         %
         {\bf (a)}~High quality laparoscopy image (color component values $\in [0,255]$).
         %
-        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke, specularities, and low noise ($\sigma$ = 5).
+        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke and specularities.
         % 
-        Results of processing image {\bf (b)}, using:
+        Results of processing image {\bf (b)} using:
         %
         {\bf (c)}~{\em our method};
         %
@@ -160,9 +160,9 @@ We now perform validation on laparoscopy data. We take high quality laparoscopy 
         %
         {\bf (a)}~High quality laparoscopy image (color component values $\in [0,255]$).
         %
-        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke, specularities, and low noise ($\sigma$ = 5).
+        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke, specularities, and moderate noise ($\sigma$ = 5).
         % 
-        Results of processing image {\bf (b)}, using:
+        Results of processing image {\bf (b)} using:
         %
         {\bf (c)}~{\em our method};
         %
@@ -264,7 +264,7 @@ From the examples, we observed that our method generates natural colors after re
         %
         {\bf (a)}~Observed image.
         %
-        Results of processing image (a) using:
+        Results of processing image {\bf (a)} using:
         %
         {\bf (b)}~denoising with bilateral filter followed by dehazing~\cite{he2011dark} followed by inpainting;
         %

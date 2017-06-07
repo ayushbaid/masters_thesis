@@ -10,14 +10,14 @@ Given a data vector $W$, a linear decomposition over the dictionary $\mathbf{D}$
     W \approx \mathbf{D} S \label{eqn:lineardecomp}
 \end{align}
 
-In sparse coding \cite{harpur1996sc}, we want to represent an input vector using as few atoms of the dictionary as possible, i.e. $S$ should only a few entries with significant magnitude. Olshausen and Field\cite{olshausen1996sparse} demonstrated that the dictionary atoms learnt via sparse coding bears similarity to processing in brain's visual cortex by learning features which are localized, oriented, and bandpass. A common way to enforce sparsity is to regularize the codes. A penalty function which uses regularization is of the form
+In sparse coding \cite{harpur1996sc}, we want to represent an input vector using as few atoms of the dictionary as possible, i.e. $S$ should have only a few entries with significant magnitude. Olshausen and Field\cite{olshausen1996sparse} demonstrated that the dictionary atoms learnt via sparse coding bears similarity to processing in brain's visual cortex by learning features which are localized, oriented, and bandpass. A common way to enforce sparsity is to regularize the codes. A penalty function which uses regularization is of the form
 
 \begin{align}
     J(\mathbf{D}, S) = || W - \mathbf{D} S ||_2^2 + \lambda \sum_{j} f(S_{j}) \label{eqn:sparsecoding}
 \end{align}
 where $\lambda$ is called the regularization constant and controls the trade-off between sparsity and reconstruction accuracy, and $f$ typically is a strictly increasing function of the absolute value of its argument and hence favor sparsity.
 
-Sparse coding using L1 regularization, i.e. $f(S_{j}) = | S_{j} |$, is used to perform digit recognition in \cite{mairal2009supervised}. Non-negative sparse coding \cite{hoyer2002nnsc} constrains the dictionary and codes to be non-negative. The choice of sparsity function is $f(S_{j}) = | S_{j} | = S_{j}$. Mairal et al. \cite{mairal2009online} proposed an online algorithm for dictionary learning in sparse coding framework using L1 regularization. They use least angle regression to solve the sparse coding problem, given a dictionary. Their algorithm and accompanying code provide a significant speedup for learning a  dictionary on large datasets.
+Sparse coding using L1 regularization, i.e. $f(S_{j}) = | S_{j} |$, is used to perform digit recognition in \cite{mairal2009supervised}. Non-negative sparse coding \cite{hoyer2002nnsc} constrains the dictionary and codes to be non-negative. The choice of sparsity function is $f(S_{j}) = | S_{j} | = S_{j}$. Mairal et al. \cite{mairal2009online} propose an online algorithm for dictionary learning in sparse coding framework using L1 regularization. They use least angle regression to solve the sparse coding problem for a given dictionary. Their algorithm and accompanying code provide a significant speedup for learning a  dictionary on large datasets.
 
 The L1 regularization problem can be approximated by an iterative reweighted least square optimization algorithm. The core of the iterative scheme is a weighted least square problem, which is described in the following text. Given a dictionary $\mathbf{D}$ and input vector $W$, the weighted least square optimization problem and its solution are
 \begin{align}
@@ -34,7 +34,7 @@ This iterative method of fixing the weights and solving a weighted L2 problem ru
 
 \section{Image intensity distribution}
 \label{sec:pcaDist}
-Surgical smoke is generally gray in color. It perturbs the color in the image and hence the overall distribution of colors. We need some model distribution of intensities for uncorrupted high quality laparoscopy images to compare the observed image with. A distribution in a 3 dimensional colorspace will be the best fit on the data. But it gives rise to high computational complexity, and also no generic distribution fits the laparoscopy dataset. So, we consider modeling a distributions along each of the three color channels independently.
+Surgical smoke is generally gray in color. It perturbs the color in the image and hence the overall distribution of colors. We need a model distribution for pixel intensities of uncorrupted high quality laparoscopy images to compare the observed image with. A distribution in a 3 dimensional colorspace will be the best fit on the data. But it gives rise to high computational complexity, and also no generic distribution fits the laparoscopy dataset. So, we consider modeling a distributions along each of the three color channels independently.
 
 The channels in the \emph{RGB} space exhibit very high correlation and modeling the three channels independently is a poor choice in this colorspace. Hence, we use a data-adaptive decorrelated colorspace \cite{reinhard2001color}. We first transform the data from \emph{RGB} space to \emph{LMS} space, as the latter is closely related to human perception. We then calculate the eigenvectors in the \emph{LMS} space and use them as the basis vectors for the new space, which we call \emph{l$\alpha\beta$} space. The final transformation is 
 \begin{align}
@@ -52,7 +52,7 @@ The channels in the \emph{RGB} space exhibit very high correlation and modeling 
     \end{bmatrix}
 \end{align}
 
-The cross-correlation between channels in \emph{RGB} space is $\left[ 0.96, 0.99, 0.94\right]$ and that in \emph{l$\alpha\beta$} space is $\left[ 0.62, 0.63, 0.81 \right]$. The new space has a clear advantage when we model the intensity distribution channel-wise and independent of other channels. We use a Gamma distribution to fit the \textit{l} channel and Gaussian distributions to fit $\alpha$ and $\beta$ channels respectively. The emperical distributions and the fits are illustrated in \Figref{fig:intensityDist}
+The cross-correlation between channels in \emph{RGB} space is $\left[ 0.96, 0.99, 0.94\right]$ and that in \emph{l$\alpha\beta$} space is $\left[ 0.62, 0.63, 0.81 \right]$. The new space has a clear advantage when we model the intensity distribution channel-wise and independent of other channels. We use a Gamma distribution to fit the \textit{l} channel and Gaussian distributions to fit $\alpha$ and $\beta$ channels respectively. The empirical distributions and the model fits are illustrated in \Figref{fig:intensityDist}
 
 \begin{figure}[!t]
     \threeAcrossHeight{Pics/axis_1.png}{Pics/axis_2.png}{Pics/axis_3.png}{0.33}
@@ -61,7 +61,7 @@ The cross-correlation between channels in \emph{RGB} space is $\left[ 0.96, 0.99
         %
         {\bf Learning Prior PDFs on Color.}
         %
-        Empirical histograms (bar plots) and fitted parametric PDFs (solid curves) in uncorrupted laparoscopic images, for 3 channel components: {\bf
+        Empirical histograms (bar plots) and fitted parametric PDFs (solid curves) in uncorrupted laparoscopy images, for 3 channel components: {\bf
             (a)}~gamma $\Gamma_1$, {\bf (b)}~Gaussian $G_2$, {\bf (c)}~Gaussian $G_3$.
         %
     }
@@ -74,7 +74,7 @@ Kernel density estimation (KDE) is a non-parametric method of estimating the pro
 \begin{align}
     f^\mathbf{w} (b) = \frac{1}{nh} \sum_{i=1}^{n} K\left(\frac{b-w_i}{h}\right) \label{eqn:kde}
 \end{align}
-where $K(.)$ is a kernel (which takes non-negative values, integrate to one, and has a mean zero), and $h > 0$ is the bandwidth and controls the trade-off between bias and variance of the estimator. We will use a Gaussian kernel due to its mathematical property like differentiability. Due to our choice of Gaussian kernel, we can use the rule of thumb estimate \cite{silverman1986density} for bandwidth using the sample standard deviation $\hat{\sigma}$. The rule of thumb estimate is
+where $K(.)$ is a kernel (which takes non-negative values, integrate to one, and has a zero mean), and $h > 0$ is the bandwidth and controls the trade-off between bias and variance of the estimator. We will use a Gaussian kernel due to its mathematical property like differentiability. Due to our choice of Gaussian kernel, we can use the rule of thumb estimate \cite{silverman1986density} for bandwidth using the sample standard deviation $\hat{\sigma}$. The rule of thumb estimate is
 \begin{align}
     h = \left( \frac{4 \hat{\sigma}^5}{3n}\right)^{\frac{1}{5}} \label{eqn:kdebw}
 \end{align}
@@ -89,7 +89,7 @@ We will now derive the CDF estimator $F^\mathbf{w} \left( \cdot \right)$ and its
     _{l=-\infty}^{b} \frac{\partial f^\mathbf{w} (l)}{\partial w_i} \diff l
 \end{align}
 
-We will formulate a \emph{novel} penalty which compares an empirical CDF $F^\mathbf{w}$ with a template CDF $F^\text{ref}$. Our formulation is motivated with CDF matching. We map fixed set of points $B$ under the CDF matching transform from empirical to template CDF, and penalize squared difference of the set of output points with the input. When the two CDFs match, the outputs will be the same as input points and hence the penalty will be zero. The penalty function and its gradient with respect to a point $w_i$ in $\mathbf{w}$ are
+We will formulate a \emph{novel} penalty which compares an empirical CDF $F^\mathbf{w}$ with a template CDF $F^\text{ref}$. Our formulation is motivated by CDF matching. We map fixed set of points $B$ under the CDF matching transform from empirical to template CDF, and penalize squared difference of the set of output points with the input. When the two CDFs match, the outputs will be the same as input points and hence the penalty will be zero. The penalty function and its gradient with respect to a point $w_i$ in $\mathbf{w}$ are
 \begin{align}
     J_\text{dist} (\mathbf{w}) &= \sum_{b \in B} \left\lbrace b - H \left( b; F^\mathbf{w}, F^\text{ref} \right) \right\rbrace^2 \label{eqn:kdecost} \\
     \frac{ \partial J_\text{dist} (\mathbf{w})} { \partial w_i} &= 2 \sum_{b \in B} \left\lbrace b - H \left( b; F^\mathbf{w}, F^\text{ref} \right) \right\rbrace \frac{\partial H \left( b; F^\mathbf{w}, F^\text{ref} \right)}{\partial w_i}

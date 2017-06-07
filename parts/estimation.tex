@@ -1,6 +1,6 @@
 \chapter{Estimation}
 
-For our algorithm, we assume that we are provided with a speckle label map $\mathbf{r}$, speckle color $K_\text{spec}$, and smoke color $K_\text{smoke}$. We will use maximum aposteriori probability (MAP) estimation scheme for image $\mathbf{X}$. Given the speckle map $\mathbf{r}$, we remove the pixel locations of $\mathbf{y}$ where which are specular highlights, as they convey no information about the underlying image. We call the new image with holes in place of specular highlights as $\mathbf{\mathring y}$. The MAP estimate is
+For our algorithm, we assume that we are provided with a speckle label map $\mathbf{r}$, speckle color $K_\text{spec}$, and smoke color $K_\text{smoke}$. We use maximum aposteriori probability (MAP) estimation scheme for image $\mathbf{X}$. Given the speckle map $\mathbf{r}$, we remove the pixel locations of $\mathbf{y}$ where specular highlights are present, as they convey no information about the underlying image. We call the new image with holes in place of specular highlights as $\mathbf{\mathring y}$. The MAP estimate is
 
 \begin{align}
 \hat{\mathbf{x}} &= \argmax_\mathbf{x} P \left( \mathbf{x} | \mathbf{\mathring y}, \mathbf{r} \right) = \argmax_\mathbf{x} P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{r} \right) P \left( \mathbf{x} \right) \label{eqn:simplemap}
@@ -63,9 +63,9 @@ $G^\dagger_i$ is the factor of $\mathbf{T}$ at pixel $i$, and $G_{ij}$ is the fa
 \log G_{ij}^* \left( S_{ij} \right) &= \mathbb{E}_{ \prod_{k \neq j} G^*_{ik} \left( S_{ik} | \mathbf{x}^m \right) } \left[ \log P \left( S_i | \mathbf{x}^m \right)\right] + c_2 \label{eqn:solveFactS}
 \end{align}
 
-\Eqref{eqn:solveFactT} and \Eqref{eqn:solveFactS} are solved iteratively for optimum factors $ \lbrace G^{\dagger*}_i \rbrace $ and $ \lbrace G_{ij}^* \rbrace $ until convergence. $c_1$ and $c_2$ are additive constants which will be absorbed in normalization of factor distributions. The parameters of optimum factors are derived in \Appref{app:factorParamsT} and \Appref{app:factorParamsS}.  Once we have the optimum factorization, solving for the $Q$ function becomes simple. We substitue $\mu^\mathbf{T}_i$ for $T_i$, $\left( \mu^\mathbf{T}_i \right)^2 + \left( \sigma^\mathbf{T}_i \right)^2$ for $T_i^2$ and $\mu^\mathbf{T}_i \mu^\mathbf{T}_j $ for $T_i T_j$, and $\mu^\mathbf{S}_{ij}$ for $S_{ij}$ in
+\Eqref{eqn:solveFactT} and \Eqref{eqn:solveFactS} are solved iteratively for optimum factors $ \lbrace G^{\dagger*}_i \rbrace $ and $ \lbrace G_{ij}^* \rbrace $ until convergence. $c_1$ and $c_2$ are additive constants which are be absorbed in normalization of factor distributions. The parameters of optimum factors are derived in \Appref{app:factorParamsT} and \Appref{app:factorParamsS}.  Once we have the optimum factorization, solving for the $Q$ function becomes simple. We substitue $\mu^\mathbf{T}_i$ for $T_i$, $\left( \mu^\mathbf{T}_i \right)^2 + \left( \sigma^\mathbf{T}_i \right)^2$ for $T_i^2$ and $\mu^\mathbf{T}_i \mu^\mathbf{T}_j $ for $T_i T_j$, and $\mu^\mathbf{S}_{ij}$ for $S_{ij}$ in
 \begin{align}
-Q(\mathbf{x}; \mathbf{x}^m) = \mathbb{E}_{ \prod_{i=1}^{I} F^*_i (T_i | \mathbf{y}, \mathbf{x}^m) } \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + \sum_i \mathbb{E}_{ \prod_{j=1}^{J} G^*_{ij} \left( S_{ij} | \mathbf{x}^m \right) } \left[ \log P \left( S_i | \mathbf{x} \right) \right] + \log P \left( \mathbf{x} \right)
+Q(\mathbf{x}; \mathbf{x}^m) = \mathbb{E}_{ \prod_{i=1}^{I} G^*_i (T_i | \mathbf{y}, \mathbf{x}^m) } \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + \sum_i \mathbb{E}_{ \prod_{j=1}^{J} G^*_{ij} \left( S_{ij} | \mathbf{x}^m \right) } \left[ \log P \left( S_i | \mathbf{x} \right) \right] + \log P \left( \mathbf{x} \right)
 \end{align}
 
 
@@ -85,7 +85,6 @@ In this step, we will maximize $Q(\mathbf{x}; \mathbf{x}^m)$ with respect to $\m
 \begin{align}
     \mathbf{x}^{m+1} &= \argmax_{\mathbf{x}} Q \left( \mathbf{x}; \mathbf{x}^{m+1} \right) \label{eqn:mStep}
 \end{align}
-
 This optimization problem is solved using projected gradient descent with adaptive step size.
 
 

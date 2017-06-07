@@ -67,9 +67,8 @@
 
 
 \usepackage{parskip}
-\edef\restoreparindent{\parindent=\the\parindent\relax}
-\setlength{parskip}{2.5em}
-\restoreparindent
+\setlength{\parskip}{1.5em}
+\setlength{\parindent}{12mm}
 
 
 \begin{document}
@@ -161,13 +160,13 @@
 %                         Contents list                         
 %******************************************************************
 %\figurespagefalse
-%\tablespagefalse
+\tablespagefalse
 \makecontents % Creats toc, lof, and lot
 
 %******************************************************************
 %                        Notations                              
 %******************************************************************
-\notations[4cm]{List of Symbols}      
+%\notations[4cm]{List of Symbols}      
 
 %%********************************Mainmatter***********************
 % In mainmatter everything comes with arabic numbering	
