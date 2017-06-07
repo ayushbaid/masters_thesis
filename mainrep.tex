@@ -17,7 +17,8 @@
     parts/literature,
     parts/formulation,
     parts/estimation,
-    parts/results, 
+    parts/results,
+    parts/conclusion, 
     parts/appendix1,
     dec,pub,ack
 }
@@ -34,7 +35,7 @@
 \usepackage{setspace}
 
 \usepackage{bibentry}
-\nobibliography*
+
 
 %%% Macro definitions for Commonly used symbols
 \newcommand{\Rey}{\ensuremath{\mathrm{Re}}}
@@ -62,9 +63,17 @@
     urlcolor={blue!80!black}
 }
 
-
 \setstretch{1.5}
+
+
+\usepackage{parskip}
+\edef\restoreparindent{\parindent=\the\parindent\relax}
+\setlength{parskip}{2.5em}
+\restoreparindent
+
+
 \begin{document}
+    
 	
 %%********************************Frontmatter***********************
 % In frontmatter everything comes with roman numbering	
@@ -101,7 +110,7 @@
 
 %% Supervisor and cosupervisor/excosupervisor name can be put here
 \supervisor{Prof. S. N. Merchant}
-\cosupervisor{Prof. S. Awate}
+\cosupervisor{Prof. S.P. Awate}
 %\excosupervisor{External Supervisor}
 
 %% Roll number
@@ -174,6 +183,7 @@
 \include{parts/formulation}
 \include{parts/estimation}
 \include{parts/results}
+\include{parts/conclusion}
 
 %****************************************************************
 %                         Appendices                           

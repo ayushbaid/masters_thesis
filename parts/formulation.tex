@@ -1,27 +1,27 @@
 \chapter{Formulation}
 
-In this chapter, we will first cover the concept of sparse coding which will be used in our design of prior probaiblity on the uncorrupted image estimate $\mathbf{X}$. We then introduce a new colorspace and introduce a novel penalty function which matches two cumulative distribution functions (CDFs). We then design an MRF prior on the $\mathbf{X}$. This will be followed by the image formation model and then design of the remaining variables in the system.
+We start this chapter with the concept of sparse coding, which will be used in our design of prior probability distribution on the uncorrupted image estimate $\mathbf{X}$. We then introduce a new colorspace and introduce a novel penalty function which matches two cumulative distribution functions (CDFs). We then design an MRF prior on the $\mathbf{X}$. This will be followed by the image formation model and then design of the remaining variables in the system.
 
-Our notation scheme is to use upper case for random variables and lower case for their specific instance. Bold face will denote a set of random variables over the whole image, and normal face will denote an element from that set.
+Our notation scheme is to use upper case for random variables and lower case for their specific instance. Bold fonts denote a set of random variables over the whole image, and normal fonts denote an element from that set.
 
 \section{Sparse coding over a dictionary}
-Given a data vector $W$, a linear decomposition over the dictionary $\mathbf{D}$ in terms of coding $S$ is defined as
+Given a data vector $W$, a linear decomposition over the dictionary $\mathbf{D}$ in terms of coding $S$ is expressed as
 \begin{align}
     W \approx \mathbf{D} S \label{eqn:lineardecomp}
 \end{align}
 
-In sparse coding \cite{harpur1996sc}, we want to represent an input vector to be using as few atoms of the dictionary as possible, i.e. $S$ should only a few entries with significant magnitude. Olshausen and Field\cite{olshausen1996sparse} demonstrated that the dictionary atoms learnt via sparse coding bears similarity to precessing by visual cortex by learning features which are localized, oriented, and bandpass. A common way to enforce sparsity is to regularize the codes. A penalty function which uses regularization is of the form
+In sparse coding \cite{harpur1996sc}, we want to represent an input vector using as few atoms of the dictionary as possible, i.e. $S$ should only a few entries with significant magnitude. Olshausen and Field\cite{olshausen1996sparse} demonstrated that the dictionary atoms learnt via sparse coding bears similarity to processing in brain's visual cortex by learning features which are localized, oriented, and bandpass. A common way to enforce sparsity is to regularize the codes. A penalty function which uses regularization is of the form
 
 \begin{align}
     J(\mathbf{D}, S) = || W - \mathbf{D} S ||_2^2 + \lambda \sum_{j} f(S_{j}) \label{eqn:sparsecoding}
 \end{align}
-where $\lambda$ is called the regularization constant and controls the trade-off between sparsity and reconstruction accuracy, and $f$ typically is strictly increasing function of the absolute value of its argument and hence favor sparsity.
+where $\lambda$ is called the regularization constant and controls the trade-off between sparsity and reconstruction accuracy, and $f$ typically is a strictly increasing function of the absolute value of its argument and hence favor sparsity.
 
-Sparse coding using L1 regularization, i.e. $f(S_{j}) = | S_{j} |$, was used to perform digit recognition in \cite{mairal2009supervised}. Non-negative sparse coding \cite{hoyer2002nnsc} constrains the dictionary and codes to be non-negative. The choice of sparsity function is $f(S_{j}) = | S_{j} | = S_{j}$. Mairal et al. \cite{mairal2009online} proposed an online algorithm for dictionary learning in sparse coding framework using L1 regularization. They use least angle regression to solve the sparse coding problem, given a dictionary. Their algorithm and accompanying code provide a significant speedup for learning a  dictionary on large datasets.
+Sparse coding using L1 regularization, i.e. $f(S_{j}) = | S_{j} |$, is used to perform digit recognition in \cite{mairal2009supervised}. Non-negative sparse coding \cite{hoyer2002nnsc} constrains the dictionary and codes to be non-negative. The choice of sparsity function is $f(S_{j}) = | S_{j} | = S_{j}$. Mairal et al. \cite{mairal2009online} proposed an online algorithm for dictionary learning in sparse coding framework using L1 regularization. They use least angle regression to solve the sparse coding problem, given a dictionary. Their algorithm and accompanying code provide a significant speedup for learning a  dictionary on large datasets.
 
 The L1 regularization problem can be approximated by an iterative reweighted least square optimization algorithm. The core of the iterative scheme is a weighted least square problem, which is described in the following text. Given a dictionary $\mathbf{D}$ and input vector $W$, the weighted least square optimization problem and its solution are
 \begin{align}
-    S^* &= \argmin_{S} \frac{1}{2} || W - \mathbf{D} S ||_2^2 + \lambda || \Gamma S ||_2^2 \label{eqn:wls}\\
+    S^* &= \argmin_{S} || W - \mathbf{D} S ||_2^2 + \lambda || \Gamma S ||_2^2 \label{eqn:wls}\\
     &= \left( \mathbf{D}^\intercal \mathbf{D} + \lambda \Gamma^\intercal \Gamma \right)^{-1} \mathbf{D}^\intercal W \label{eqn:wlsSolution}
 \end{align}
 where $\Gamma$ is the weight matrix. This core optimization scheme is used iteratively in iterative reweighted least squares algorithm, where in each step the weighted L2 regularized least square problem is solved. It can be used to solve L1 regularized least square problem when the weights in each iteration are chosen to be inverse of the absolute value of the current estimate of the coding \cite{chartrand2008iteratively}. If $S^m$ is the estimate before iteration $m$, then the next estimate will be
@@ -34,9 +34,9 @@ This iterative method of fixing the weights and solving a weighted L2 problem ru
 
 \section{Image intensity distribution}
 \label{sec:pcaDist}
-Surgical smoke is generally gray in color. It perturbs the color in the image and hence the overall distribution of colors. We need some model distribution of colors in uncorrupted high quality laparoscopy images to compare the observed image with. A distribution in a 3 dimensional colorspace will be the best fit on the data. But it gives rise to high computational complexity, and also no generic distribution fits the laparoscopy dataset. So, we consider modeling the distributions along 3 channels independently.
+Surgical smoke is generally gray in color. It perturbs the color in the image and hence the overall distribution of colors. We need some model distribution of intensities for uncorrupted high quality laparoscopy images to compare the observed image with. A distribution in a 3 dimensional colorspace will be the best fit on the data. But it gives rise to high computational complexity, and also no generic distribution fits the laparoscopy dataset. So, we consider modeling a distributions along each of the three color channels independently.
 
-The channels in the \emph{RGB} space exhibit very high correlation and modeling the channels independently is a poor choice. We use a data-adaptive decorrelated colorspace \cite{reinhard2001color}. We first transform the data from \emph{RGB} space to \emph{LMS} space, as the latter is closely related to human perception. We then calculate the eigenvectors in the \emph{LMS} space and use them as the basis vectors for the new space, which we call \emph{l$\alpha\beta$} space. The final transformation is 
+The channels in the \emph{RGB} space exhibit very high correlation and modeling the three channels independently is a poor choice in this colorspace. Hence, we use a data-adaptive decorrelated colorspace \cite{reinhard2001color}. We first transform the data from \emph{RGB} space to \emph{LMS} space, as the latter is closely related to human perception. We then calculate the eigenvectors in the \emph{LMS} space and use them as the basis vectors for the new space, which we call \emph{l$\alpha\beta$} space. The final transformation is 
 \begin{align}
     \begin{bmatrix}
     l \\ \alpha \\ \beta
@@ -70,26 +70,26 @@ The cross-correlation between channels in \emph{RGB} space is $\left[ 0.96, 0.99
 
 
 \section{Kernel density estimation}
-Kernel density estimation (KDE) can used to estimate the probability density function in a non-parametric way. Let $ \mathbf{w} = \left( w_1, w_2, ..., w_n\right)$ be i.i.d. samples from the same distribution. The kernel density estimate is
+Kernel density estimation (KDE) is a non-parametric method of estimating the probability density function. Let $ \mathbf{w} = \left( w_1, w_2, ..., w_n\right)$ be i.i.d. samples from a probability distribution. The kernel density estimate is
 \begin{align}
     f^\mathbf{w} (b) = \frac{1}{nh} \sum_{i=1}^{n} K\left(\frac{b-w_i}{h}\right) \label{eqn:kde}
 \end{align}
-where $K(.)$ is a kernel which takes non-negative values, integrate to one, and has a mean zero. $h > 0$ is the bandwidth and controls the trade-off between bias and variance of the estimator . We will use a Gaussian kernel due to its mathematical property like differentiability. Due to our choice of Gaussian kernel, we can use the rule of thumb estimate \cite{silverman1986density} for bandwidth using the sample standard deviation $\hat{\sigma}$. The rule of thumb estimate is
+where $K(.)$ is a kernel (which takes non-negative values, integrate to one, and has a mean zero), and $h > 0$ is the bandwidth and controls the trade-off between bias and variance of the estimator. We will use a Gaussian kernel due to its mathematical property like differentiability. Due to our choice of Gaussian kernel, we can use the rule of thumb estimate \cite{silverman1986density} for bandwidth using the sample standard deviation $\hat{\sigma}$. The rule of thumb estimate is
 \begin{align}
     h = \left( \frac{4 \hat{\sigma}^5}{3n}\right)^{\frac{1}{5}} \label{eqn:kdebw}
 \end{align}
 
-We will now derive the CDF estimator and its gradients using the Gaussian kernel.
+We will now derive the CDF estimator $F^\mathbf{w} \left( \cdot \right)$ and its gradients using the Gaussian kernel.
 \begin{align}
-    f^\mathbf{w} (b) &= \frac{1}{nh \sqrt{2 \pi \sigma^2}} \sum_{i=1}^{n} \exp \left( -\frac{(b-w_i)^2} {2 \sigma^2 h^2}\right) \\
+    f^\mathbf{w} (b) &= \frac{1}{nh \sqrt{2 \pi}} \sum_{i=1}^{n} \exp \left( -\frac{(b-w_i)^2} {2 h^2}\right) \\
     F^\mathbf{w} (b) &= \int_{l=-\infty}^{b} f^\mathbf{w} (l) \diff l \label{eqn:kdecdf} \\
     % grads
-    \frac{\partial f^\mathbf{w} (b)}{\partial w_i} &=  \frac{1}{nh \sqrt{2 \pi \sigma^2}} \exp \left( -\frac{(b-w_i)^2} {2 \sigma^2 h^2}\right) \frac{ \left( b - w_i \right) }{ \sigma^2 h^2} \\
+    \frac{\partial f^\mathbf{w} (b)}{\partial w_i} &=  \frac{1}{nh \sqrt{2 \pi}} \exp \left( -\frac{(b-w_i)^2} {2 h^2}\right) \frac{ \left( b - w_i \right) }{h^2} \\
     \frac{\partial F^\mathbf{w} (b)} {\partial w_i} &= \int
     _{l=-\infty}^{b} \frac{\partial f^\mathbf{w} (l)}{\partial w_i} \diff l
 \end{align}
 
-We will formulate a \emph{novel} penalty which compares an empirical CDF $F^\mathbf{w}$ with a template CDF $F^\text{ref}$. Our formulation is motivated with CDF matching. We map fixed set of points $B$ under the CDF matching transform from empirical to template CDF, and penalize squared difference of the set of output points with the input. When the two CDFs match, the outputs will be the same as input points and hence the cost will be zero. The cost function and its gradient with respect to a point $w_i$ in $\mathbf{w}$ are
+We will formulate a \emph{novel} penalty which compares an empirical CDF $F^\mathbf{w}$ with a template CDF $F^\text{ref}$. Our formulation is motivated with CDF matching. We map fixed set of points $B$ under the CDF matching transform from empirical to template CDF, and penalize squared difference of the set of output points with the input. When the two CDFs match, the outputs will be the same as input points and hence the penalty will be zero. The penalty function and its gradient with respect to a point $w_i$ in $\mathbf{w}$ are
 \begin{align}
     J_\text{dist} (\mathbf{w}) &= \sum_{b \in B} \left\lbrace b - H \left( b; F^\mathbf{w}, F^\text{ref} \right) \right\rbrace^2 \label{eqn:kdecost} \\
     \frac{ \partial J_\text{dist} (\mathbf{w})} { \partial w_i} &= 2 \sum_{b \in B} \left\lbrace b - H \left( b; F^\mathbf{w}, F^\text{ref} \right) \right\rbrace \frac{\partial H \left( b; F^\mathbf{w}, F^\text{ref} \right)}{\partial w_i}
@@ -103,9 +103,9 @@ where $H \left( \cdot \right)$ evaluates the mapping of a point $b$ under CDF ma
 \section{MRF model on image $\mathbf{X}$}
 \label{sec:modelX}
 
-The uncorrupted image containing $I$ pixels is modeled by an MRF $\mathbf{X} := \lbrace X_i \rbrace_{i=1}^{I}$, where $X_i \in \left[0, 1\right]^3$ is a vector of \emph{RGB} values at each pixel. We will define potential functions on cliques of this MRF and use it as prior probability on $\mathbf{X}$. We use the sparse coding prior to preserve texture and remove noise, and image intensity distribution prior to enforce image intensity statistics. The neighborhood system $\mathcal{N}^X$ is a fully connected system.
+The uncorrupted image containing $I$ pixels is modeled by an MRF $\mathbf{X} := \lbrace X_i \rbrace_{i=1}^{I}$, where $X_i \in \left[0, 1\right]^3$ is a vector of \emph{RGB} values at each pixel. We will define potential functions on cliques of this MRF and use it as prior probability on $\mathbf{X}$. We use the sparse coding prior to preserve texture and remove noise, and image intensity distribution prior to enforce color statistics. The neighborhood system $\mathcal{N}^X$ is a fully connected system.
 
-Using the kernel density estimation based penalty function (\Eqref{eqn:kdecost}), we define potential function on a clique containing all the pixels in the image. The expression for the same is
+Using the kernel density estimation based penalty function (\Eqref{eqn:kdecost}), we define potential function on the clique containing all the pixels in the image. The expression for the same is
 \begin{align}
 J_\text{dist}(\mathbf{X}) = \sum_{i=1}^{3} \sum_{b \in B_{c_i}} \left\lbrace b - H \left( b; F^\mathbf{X}_{c_i}, F^\text{ref}_{c_i} \right) \right\rbrace^2 \label{eqn:cost_kde}
 \end{align}
@@ -129,7 +129,7 @@ and $Z$ is the normalization constant. $\gamma_1, \gamma_2 \in \mathbb{R}^+$ are
 
 \section{Image formation}
 \label{sec:imgformation}
-The artifacts are captured in a 3 step fashion. In this section, $i$ denotes the pixel location. \Eqref{eqn:speckle} captures the effect of speckles using a binary speckle map $\mathbf{R}$, where $R_i = 1$ denotes the presence of speckle at pixel $i$. \Eqref{eqn:smokenoise} captures the smoke using transmission coefficient $T_i \in [0, 1]$. To capture noise, an i.i.d. white Gaussian $\eta_i$ is added at each pixel. $\mathbf{Y}$ is captured and available for processing. The equations are
+The artifacts are captured in a 3 step fashion. In this section, $i$ denotes the pixel location. \Eqref{eqn:speckle} captures the effect of speckles using a binary speckle map $\mathbf{R}$, where $R_i = 1$ denotes the presence of speckle at pixel $i$. \Eqref{eqn:smokenoise} captures the smoke using transmission coefficient $T_i \in [0, 1]$. To capture noise, an i.i.d. zero mean Gaussian $\eta_i$ with standard deviation $\sigma$ is added at each pixel. $\mathbf{Y}$ is captured and available for processing. The equations are
 \begin{align}
 Z_i &= (1 - R_i) X_i  + R_i K_\text{spec} \label{eqn:speckle} \\
 Y_i &= T_i Z_i + (1 - T_i) K_\text{smoke} + \eta_i \label{eqn:smokenoise}

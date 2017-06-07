@@ -13,11 +13,11 @@
 }
 
 \newcommand{\oneWidthLabel}[4][0]{
-  \setlength{\tmpLength}{0.95\textwidth}
-  \setlength{\tmpLength}{#3\tmpLength}
+  \setlength{\tmpLength}{0.49\textwidth}
+  \setlength{\tmpLength}{0.37\tmpLength}
   \centerline{
     \begin{tabular}{c}
-      \includegraphics[angle=#1,width=\tmpLength]{#2} \\
+      \includegraphics[angle=#1,height=#3\tmpLength]{#2} \\
       \small \mbox{#4}
     \end{tabular}
   } % centering

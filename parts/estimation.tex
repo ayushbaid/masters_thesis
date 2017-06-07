@@ -10,7 +10,7 @@ The first part of the final term in \Eqref{eqn:simplemap} is the likelihood of o
 
 
 \section{Variational Bayesian expectation maximization}
-We will introduce smoke transmission map $\mathbf{T}$ and dictionary coding $\mathbf{S}$ as latent variables in the system. The posterior probability is 
+We will introduce dictionary coding $\mathbf{S}$ and smoke transmission map $\mathbf{T}$ as latent variables in the system. The posterior probability is 
 \begin{align}
 P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{r} \right) P \left( \mathbf{x} \right) &= \int_{\mathbf{s}, \mathbf{t}} P \left( \mathbf{\mathring y}, \mathbf{x}, \mathbf{s}, \mathbf{t} | \mathbf{r} \right) \diff \mathbf{s} \diff\mathbf{t} \\
 &= \int_{\mathbf{s}, \mathbf{t}} P \left( \mathbf{\mathring y} | \mathbf{x}, \mathbf{s},  \mathbf{t}, \mathbf{r} \right)  P \left(\mathbf{x}, \mathbf{s} \right) P \left( \mathbf{t} \right) \diff\mathbf{s} \diff\mathbf{t} \label{eqn:mapDerive1}\\
@@ -21,8 +21,10 @@ The final term in \Eqref{eqn:mapDerive2} has three components. The first one is 
 
 Due to our modeling of the noise as i.i.d. Gaussian, the log likelihood probability distribution turns out to be
 \begin{align}
-\log P \left( \mathbf{\mathring y}| \mathbf{x}, \mathbf{t}, \mathbf{r} \right) &= - \sum_{i | r_i = 0} \left( y_i - t_i x_i - (1-t_i) K_\text{smoke} \right)^2
+\log P \left( \mathbf{\mathring y}| \mathbf{x}, \mathbf{t}, \mathbf{r} \right) &= - \frac{1}{\sigma^2} \sum_{i | r_i = 0} \left( y_i - t_i x_i - (1-t_i) K_\text{smoke} \right)^2
 \end{align}
+
+We will now cover the expectation and maximization steps in the EM algorithm. Variational Bayesian factorization is introduced in the expectation step to overcome intractability.
 
 
 \subsection{Expectation step}
@@ -61,11 +63,10 @@ $G^\dagger_i$ is the factor of $\mathbf{T}$ at pixel $i$, and $G_{ij}$ is the fa
 \log G_{ij}^* \left( S_{ij} \right) &= \mathbb{E}_{ \prod_{k \neq j} G^*_{ik} \left( S_{ik} | \mathbf{x}^m \right) } \left[ \log P \left( S_i | \mathbf{x}^m \right)\right] + c_2 \label{eqn:solveFactS}
 \end{align}
 
-\Eqref{eqn:solveFactT} and \Eqref{eqn:solveFactS} are solved iteratively for optimum factors $ \lbrace G^{\dagger*}_i \rbrace $ and $ \lbrace G_{ij}^* \rbrace $ until convergence. $c_1$ and $c_2$ are additive constants which will be absorbed in normalization of factor distributions. The parameters of optimum factors are derived in \Appref{app:factorParamsT} and \Appref{app:factorParamsS}.  Once we have the optimum factorization, solving for the $Q$ function becomes simple. The simplified function is
+\Eqref{eqn:solveFactT} and \Eqref{eqn:solveFactS} are solved iteratively for optimum factors $ \lbrace G^{\dagger*}_i \rbrace $ and $ \lbrace G_{ij}^* \rbrace $ until convergence. $c_1$ and $c_2$ are additive constants which will be absorbed in normalization of factor distributions. The parameters of optimum factors are derived in \Appref{app:factorParamsT} and \Appref{app:factorParamsS}.  Once we have the optimum factorization, solving for the $Q$ function becomes simple. We substitue $\mu^\mathbf{T}_i$ for $T_i$, $\left( \mu^\mathbf{T}_i \right)^2 + \left( \sigma^\mathbf{T}_i \right)^2$ for $T_i^2$ and $\mu^\mathbf{T}_i \mu^\mathbf{T}_j $ for $T_i T_j$, and $\mu^\mathbf{S}_{ij}$ for $S_{ij}$ in
 \begin{align}
 Q(\mathbf{x}; \mathbf{x}^m) = \mathbb{E}_{ \prod_{i=1}^{I} F^*_i (T_i | \mathbf{y}, \mathbf{x}^m) } \left[ \log P \left( \mathbf{y}, \mathbf{T} | \mathbf{x}, \mathbf{r} \right) \right] + \sum_i \mathbb{E}_{ \prod_{j=1}^{J} G^*_{ij} \left( S_{ij} | \mathbf{x}^m \right) } \left[ \log P \left( S_i | \mathbf{x} \right) \right] + \log P \left( \mathbf{x} \right)
 \end{align}
-This expression is simplified by substituting $\mu^\mathbf{T}_i$ for $T_i$, $\left( \mu^\mathbf{T}_i \right)^2 + \left( \sigma^\mathbf{T}_i \right)^2$ for $T_i^2$ and $\mu^\mathbf{T}_i \mu^\mathbf{T}_j $ for $T_i T_j$, and $\mu^\mathbf{S}_{ij}$ for $S_{ij}$ to get an expression with $\mathbf{x}$ as the variable.
 
 
 \subsection{M step}

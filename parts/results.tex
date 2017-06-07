@@ -6,19 +6,19 @@ In this chapter, we compare our methods with the existing literature. To the bes
     \item Noise removal with edge preserving bilateral filtering, followed by smoke removal with He PAMI11 \cite{he2011dark} and anisotropic diffusion inpainting.
 \end{enumerate}
 
-We observe the qualitative aspect of results such as texture, presence of noise, and accuracy and naturalness of colors in the output. We also use 4 quantitative measures such has as mean root mean square difference (RRMSE), sum of channel-wise mean structure similarity (SSIM) index across RGB channels, sum of channel-wise mean quality index based on local variance (QILV) across RGB channels, and sum of channel-wise chi-squared distance between histograms along the 3 channels in the LMS colorspace. These metrics cover a wide range of features such as noise level, blur, structure, and color distribution. RRMSE, chi-squared distance should be low and QILV, SSIM should be high for the best method.
+We observe the qualitative aspect of output images such as texture, presence of noise, and accuracy and naturalness of colors in the output. We also use 4 quantitative measures, which are (1) mean root mean square difference (RRMSE); (2)sum of channel-wise mean structure similarity (SSIM) index across RGB channels; (3) sum of channel-wise mean quality index based on local variance (QILV) across RGB channels; (4) sum of channel-wise chi-squared distance between histograms along the 3 channels in the LMS colorspace. These metrics cover a wide range of features such as noise level, blur, structure, and color distribution. RRMSE, chi-squared distance should be low and QILV, SSIM should be high for the best method.
 
 We present examples and quantitative metrics by processing synthetically corrupted simulated data and high quality laparoscopy data in the following sections.
 
 \section{Experiment details}
-Proposed as well as competing methods are tuned for best performance at 3 percent noise level. Our method has three free parameters ($\gamma_1$,  $\gamma_2$ and $\gamma_3$) which are to be tuned.For synthetic corruption, we use 3 transmission coefficient maps and 20 specularity maps. We add i.i.d. Gaussian noise of standard deviation ranging from 0 \% to 7\%. We get 3 times 5 transmission coefficient maps using 5 scalar multiples or smoke levels. 
+Proposed as well as competing methods are tuned for best performance at 3 percent noise level. Our method has three free parameters ($\gamma_1$,  $\gamma_2$ and $\gamma_3$) which are to be tuned. For synthetic corruption, we use 3 transmission coefficient maps and 20 specularity maps. We add i.i.d. Gaussian noise of standard deviation ranging from 0 \% to 7\%. We get 3 times 5 transmission coefficient maps using 5 scalar multiples or smoke levels. 
 
 \section{Synthetic corruption on simulated data}
 
 \begin{figure}[h]
     \twoAcrossLabels {Pics/Simulated/1-exp1-x1_ground_truth} {Pics/Simulated/1-exp1-x2_corrupt} {2.3} {(a)} {(b)}
     \twoAcrossLabels {Pics/Simulated/1-exp1-x7_vb} {Pics/Simulated/1-exp1-x3_seq} {2.3} {(c)} {(d)}
-    \oneWidthLabel {Pics/Simulated/1-exp1-x5_wiener.png} {0.38} {(e)}
+    \oneWidthLabel {Pics/Simulated/1-exp1-x5_wiener.png} {2.3} {(e)}
     \caption
     {
         %
@@ -62,7 +62,7 @@ Proposed as well as competing methods are tuned for best performance at 3 percen
 
 We use this experiment to provide proof on concept of our method. The simulated data is designed to provide basis of evaluation in terms of image texture and color. We use 6 noise levels, 3 smoke maps, and 5 smoke levels. This results in 90 experiments.
 
-An example of processing on synthetically corrupted phantom is \Figref{fig:imagesPhantom1}. Gibson ICIP13 \cite{gibson2013wiener} plus inpaiting does a poor job at removing smoke. Bilateral filtering, He PAMI11 \cite{he2011dark} plus inpainting does a good smoke at desmoking, but the inpainting performance is poor. Our dictionary prior does a better job of filling in texture. Proposed method VBEM has the best removal of smoke, better texture and colors.
+An example of processing on synthetically corrupted phantom is \Figref{fig:imagesPhantom1}. Gibson ICIP13 \cite{gibson2013wiener} plus inpaiting does a poor job at removing smoke. Bilateral filtering, He PAMI11 \cite{he2011dark} plus inpainting does a decent smoke at desmoking, but the inpainting performance is poor. Our dictionary prior does a better job of filling in texture. Proposed method VBEM has the best removal of smoke, better texture and colors.
 
 We perform quantitative benchmarking using 4 metrics. The results are presented in \Figref{fig:resultsQuantSimulated}. Our proposed method has better performance across all metric. RRMSE and QILV metric in particular demonstrate robustness to high smoke concentration and high noise level.
 
@@ -70,9 +70,63 @@ We perform quantitative benchmarking using 4 metrics. The results are presented 
 We now perform validation on laparoscopy data. We take high quality laparoscopy images, corrupt them synthetically, and then process using different algorithms compare the outputs with the ground truth. We run experiments on 6 image, where each image is corrupted with 90 different corruption combinations.
 
 \begin{figure}[!h]
-    \twoAcrossLabels {Pics/pgt/shortlist/speckle/1-exp545-x1_ground_truth} {Pics/pgt/shortlist/speckle/1-exp545-x2_corrupt} {2.3} {(a)} {(b)}
-    \twoAcrossLabels {Pics/pgt/shortlist/speckle/1-exp545-x7_vb} {Pics/pgt/shortlist/speckle/1-exp545-x3_seq} {2.3} {(c)} {(d)}
-    \oneWidthLabel {Pics/pgt/shortlist/speckle/1-exp545-x5_wiener.png} {0.38} {(e)}
+    \twoAcrossLabels {Pics/pgt/shortlist/exp6/box-exp6-x1_ground_truth} {Pics/pgt/shortlist/exp6/box-exp6-x2_corrupt} {1.8} {(a)} {(b)}
+    \twoAcrossLabels {Pics/pgt/shortlist/exp6/box-exp6-x7_vb} {Pics/pgt/shortlist/exp6/box-exp6-x3_seq} {1.8} {(c)} {(d)}
+    \oneWidthLabel {Pics/pgt/shortlist/exp6/box-exp6-x5_wiener.png} {1.8} {(e)}
+    \fourAcrossLabels {Pics/pgt/shortlist/exp6/crop-exp6-x1_ground_truth} {Pics/pgt/shortlist/exp6/crop-exp6-x2_corrupt} {Pics/pgt/shortlist/exp6/crop-exp6-x7_vb} {Pics/pgt/shortlist/exp6/crop-exp6-x3_seq}  {(a1)} {(b1)} {(c1)} {(d1)}
+    \caption
+    {
+        %
+        {\bf Validation on Laparoscopy Data. }
+        %
+        {\bf (a)}~High quality laparoscopy image (color component values $\in [0,255]$).
+        %
+        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke, specularities, and low noise ($\sigma$ = 5).
+        % 
+        Results of processing image {\bf (b)}, using:
+        %
+        {\bf (c)}~{\em our method};
+        %
+        {\bf (d)}~ bilateral filter denoising followed by dehazing~\cite{he2011dark} followed by inpainting;
+        %
+        {\bf (e)}~adaptive filtering~\cite{gibson2013wiener} followed by inpainting.
+        %
+        Zoomed insets of {\bf (a)}, {\bf (b)}, {\bf (c)}, {\bf (d)} are {\bf (a1)}, {\bf (b1)}, {\bf (c1)}, {\bf (d1)}.
+    }
+    \label{fig:imagesPgt1}
+\end{figure}
+
+\begin{figure}[!h]
+    \twoAcrossLabels {Pics/pgt/shortlist/exp10/box-exp10-x1_ground_truth} {Pics/pgt/shortlist/exp10/box-exp10-x2_corrupt} {1.8} {(a)} {(b)}
+    \twoAcrossLabels {Pics/pgt/shortlist/exp10/box-exp10-x7_vb} {Pics/pgt/shortlist/exp10/box-exp10-x3_seq} {1.8} {(c)} {(d)}
+    \oneWidthLabel {Pics/pgt/shortlist/exp10/box-exp10-x5_wiener.png} {1.8} {(e)}
+    \fourAcrossLabels {Pics/pgt/shortlist/exp10/crop-exp10-x1_ground_truth} {Pics/pgt/shortlist/exp10/crop-exp10-x2_corrupt} {Pics/pgt/shortlist/exp10/crop-exp10-x7_vb} {Pics/pgt/shortlist/exp10/crop-exp10-x3_seq}  {(a1)} {(b1)} {(c1)} {(d1)}
+    \caption
+    {
+        %
+        {\bf Validation on Laparoscopy Data. }
+        %
+        {\bf (a)}~High quality laparoscopy image (color component values $\in [0,255]$).
+        %
+        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke, specularities, and low noise ($\sigma$ = 5).
+        % 
+        Results of processing image {\bf (b)}, using:
+        %
+        {\bf (c)}~{\em our method};
+        %
+        {\bf (d)}~ bilateral filter denoising followed by dehazing~\cite{he2011dark} followed by inpainting;
+        %
+        {\bf (e)}~adaptive filtering~\cite{gibson2013wiener} followed by inpainting.
+        %
+        Zoomed insets of {\bf (a)}, {\bf (b)}, {\bf (c)}, {\bf (d)} are {\bf (a1)}, {\bf (b1)}, {\bf (c1)}, {\bf (d1)}.
+    }
+    \label{fig:imagesPgt2}
+\end{figure}
+
+\begin{figure}[!h]
+    \twoAcrossLabels {Pics/pgt/shortlist/exp21/1-exp21-x1_ground_truth} {Pics/pgt/shortlist/exp21/1-exp21-x2_corrupt} {1.8} {(a)} {(b)}
+    \twoAcrossLabels {Pics/pgt/shortlist/exp21/1-exp21-x7_vb} {Pics/pgt/shortlist/exp21/1-exp21-x3_seq}  {1.8} {(c)} {(d)}
+    \oneWidthLabel {Pics/pgt/shortlist/exp21/1-exp21-x5_wiener.png} {1.8} {(e)}
     \caption
     {
         %
@@ -91,11 +145,38 @@ We now perform validation on laparoscopy data. We take high quality laparoscopy 
         {\bf (e)}~adaptive filtering~\cite{gibson2013wiener} followed by inpainting.
         %
     }
-    \label{fig:imagesPgt1}
+    \label{fig:imagesPgt3}
+\end{figure}
+
+\begin{figure}[!h]
+    \twoAcrossLabels {Pics/pgt/shortlist/exp44/box-exp44-x1_ground_truth} {Pics/pgt/shortlist/exp44/box-exp44-x2_corrupt}  {1.8} {(a)} {(b)}
+    \twoAcrossLabels {Pics/pgt/shortlist/exp44/box-exp44-x7_vb} {Pics/pgt/shortlist/exp44/box-exp44-x3_seq} {1.8} {(c)} {(d)}
+    \oneWidthLabel {Pics/pgt/shortlist/exp44/box-exp44-x5_wiener.png} {1.8} {(e)}
+    \fourAcrossLabels {Pics/pgt/shortlist/exp44/crop-exp44-x1_ground_truth} {Pics/pgt/shortlist/exp44/crop-exp44-x2_corrupt} {Pics/pgt/shortlist/exp44/crop-exp44-x7_vb} {Pics/pgt/shortlist/exp44/crop-exp44-x3_seq}  {(a1)} {(b1)} {(c1)} {(d1)}
+    \caption
+    {
+        %
+        {\bf Validation on Laparoscopy Data. }
+        %
+        {\bf (a)}~High quality laparoscopy image (color component values $\in [0,255]$).
+        %
+        {\bf (b)}:~{\bf (a)} corrupted synthetically with smoke, specularities, and low noise ($\sigma$ = 5).
+        % 
+        Results of processing image {\bf (b)}, using:
+        %
+        {\bf (c)}~{\em our method};
+        %
+        {\bf (d)}~ bilateral filter denoising followed by dehazing~\cite{he2011dark} followed by inpainting;
+        %
+        {\bf (e)}~adaptive filtering~\cite{gibson2013wiener} followed by inpainting.
+        %
+        Zoomed insets of {\bf (a)}, {\bf (b)}, {\bf (c)}, {\bf (d)} are {\bf (a1)}, {\bf (b1)}, {\bf (c1)}, {\bf (d1)}.
+    }
+    \label{fig:imagesPgt4}
 \end{figure}
 
 
-\Figref{fig:imagesPgt1} shows the results of processing on laparoscopy data. The observations are similar to those for simulated data. Gibson ICIP13 \cite{gibson2013wiener} does not remove satisfactory levels of smoke. Bilateral filtering, He PAMI11 \cite{he2011dark} plus inpainting does a good job at smoke removal, but the results has loss of edges and texture. The inpainting of specular highlights has clear seams in certain regions, and the filled regions lacks texture. Proposed method VBEM has the best removal of smoke, better texture and colors. Quantitative evaluation in \Figref{fig:resultsPgtSimulated} demonstrate that we perform better for each metric.
+\Figref{fig:imagesPgt1}, \Figref{fig:imagesPgt2}, \Figref{fig:imagesPgt3}, and \Figref{fig:imagesPgt4} show the results of processing on laparoscopy data. \Figref{fig:imagesPgt1} and \Figref{fig:imagesPgt2} demonstrate better noise removal while maintaining sharper texture.\Figref{fig:imagesPgt3} is an example of better speckle removal by our method. \Figref{fig:imagesPgt4} demonstrated higher constranst and better colors after smoke removal. These observations are similar to those for simulated data. Gibson ICIP13 \cite{gibson2013wiener} does not remove satisfactory levels of smoke. Bilateral filtering, He PAMI11 \cite{he2011dark} plus inpainting does a decent job at smoke removal, but the result produces unnatural color in certain examples. Bilateral filter also leads to loss of edges and texture. The inpainting of specular highlights has clear seams in certain regions, and the filled regions lacks texture. Proposed method VBEM has the best removal of smoke, better texture and colors. Quantitative evaluation in \Figref{fig:resultsPgtSimulated} demonstrate that we perform better for each metric.
 
 \begin{figure}[!h]
     \twoAcrossLabels {Pics/pgt/boxplots/image_rrmse_smokelevels} {Pics/pgt/boxplots/image_rrmse_noise} {1.76} {(a1)} {(a2)}

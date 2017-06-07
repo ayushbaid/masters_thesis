@@ -35,7 +35,7 @@ With a prelearnt dictionary $\mathbf{D} := \lbrace D_j \rbrace_{j=1}^{J}$, the p
 
 Due to the absolute value operator in \Eqref{eqn:deriveSFactors}, we are not able to fit any standard distribution for $G_{ij}$. We therefore replace L1 regularization with weighted L2 regularization. Iterative reweighted least squares (IRLS) can be used to approximate the solution of a sparse solution due to L1 regularization with an appropriate choice of weights \cite{chartrand2008iteratively}. Specifically, if the estimate after $m$ iterations if $S^m_i$, then the next iteration gives the solution as
 \begin{align}
-S^{m+1}_i = \argmin_{S_i} \| \mathbf{\bar{x}}_i - \mathbf{D} S_i \|^2_2 + \sum_{j} \Gamma_{ij} S_{ij}^2
+S^{m+1}_i = \argmin_{S_i} \| \mathbf{\bar{x}}^m_i - \mathbf{D} S_i \|^2_2 + \sum_{j} \Gamma_{ij} S_{ij}^2
 \end{align}
 where the weight $w_{ij} = 1/| S^m_{ij} |$.
 
@@ -47,6 +47,6 @@ where c is a constant.
 
 We solve \Eqref{eqn:solveFactS} by substituting $\lbrace S_{ik} | k \neq j \rbrace$ with $\mu^\mathbf{S}_{ik}$ in \Eqref{eqn:deriveSFactors} to obtain a quadratic in $S_{ij}$ sans an additive constant. We can then obtain the mean and sigma of the optimal Gaussian factor $G_{ij}$ as
 \begin{align}
-\mu^\mathbf{S}_{ij} &= \frac{ D_j^\intercal \left( \mathbf{\bar{x}}^m_i - \sum_{k \neq j} D_k \mu^\mathbf{S}_{ik} \right) }{ D_j^\intercal D_j + 2 \lambda \Gamma_{ij} } \\
-\sigma^\mathbf{S}_{ij} &= \frac{1}{\sqrt{ D_j^\intercal D_j + 2 \lambda \Gamma_{ij} }}
+\mu^\mathbf{S}_{ij} &= \frac{ D_j^\intercal \left( \mathbf{\bar{x}}^m_i - \sum_{k \neq j} D_k \mu^\mathbf{S}_{ik} \right) }{ D_j^\intercal D_j + \lambda \Gamma_{ij} } \\
+\sigma^\mathbf{S}_{ij} &= \frac{1}{\sqrt{ D_j^\intercal D_j + \lambda \Gamma_{ij} }}
 \end{align}
