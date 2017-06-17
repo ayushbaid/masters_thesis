@@ -37,7 +37,7 @@ Due to the absolute value operator in \Eqref{eqn:deriveSFactors}, we are not abl
 \begin{align}
 S^{m+1}_i = \argmin_{S_i} \| \mathbf{\bar{x}}^m_i - \mathbf{D} S_i \|^2_2 + \sum_{j} \Gamma_{ij} S_{ij}^2
 \end{align}
-where the weight $w_{ij} = 1/| S^m_{ij} |$.
+where the weight $\Gamma_{ij} = 1/| S^m_{ij} |$.
 
 We use this development to propose a strategy for factorization. At each iteration, we set the weights as the inverse of the absolute of the mean of the factors, followed by solving for optimum factors until convergence. When we have the weights $\mathbf{\Gamma}$ fixed, the new probability distribution (instead of \Eqref{eqn:deriveSFactors}) is
 \begin{align}

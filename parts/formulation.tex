@@ -111,7 +111,7 @@ J_\text{dist}(\mathbf{X}) = \sum_{i=1}^{3} \sum_{b \in B_{c_i}} \left\lbrace b -
 \end{align}
 where $B_{c_i}$ is a fixed set of points in channel $c_i$. The colorspace of operation is $l\alpha\beta$ introduced in \Secref{sec:pcaDist}.
 
-We will use L1 regularized sparse coding on full patches (i.e. patches fully contained in the image) of size $\acute{m} \times \acute{m}$ of $\mathbf{X}$ as the second penalty function. We define potentials on each square clique of size $m \times m$, where $m := 2\acute{m} - 1$. This translated to a sparse coding cost penalty on full patches $\lbrace \mathbf{\bar X}_i \rbrace_{i=1}^{I'}$, which is defined as
+We will use L1 regularized sparse coding on full patches (i.e. patches fully contained in the image) of size $\acute{m} \times \acute{m}$ of $\mathbf{X}$ as the second penalty function. We define potentials on each square clique of size $m \times m$, where $m := 2\acute{m} - 1$. This translates to a sparse coding cost penalty on full patches $\lbrace \mathbf{\bar X}_i \rbrace_{i=1}^{I'}$, which is defined as
 \begin{align}
     J_\text{dict} \left( \mathbf{X}, \mathbf{S} \right) &= \sum_{i=1}^{I'} \| \mathbf{\bar X}_i - \mathbf{D} S_i \|_2^2 + \lambda \| S_i \|_1 \label{eqn:dictCost}
 \end{align}
@@ -121,7 +121,7 @@ The prior probability on $\mathbf{X}$ is defined as
 \begin{align}
     P\left( \mathbf{X} \right) = \frac{\int_{\mathbf{S}} \exp \left( -E\left(\mathbf{X}, \mathbf{S} \right) \right) \diff \mathbf{S}}{Z}
 \end{align}
-where the Gibbs energy function is
+where $E \left(\mathbf{X}, \mathbf{S} \right)$ is the Gibbs energy function, given by
 \begin{align}
     E \left(\mathbf{X}, \mathbf{S} \right) &= \gamma_1 J_\text{dict} \left( \mathbf{X}, \mathbf{S} \right) + \gamma_2 J_\text{dist} \left( \mathbf{X} \right)
 \end{align}

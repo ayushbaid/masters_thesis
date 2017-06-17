@@ -1,7 +1,7 @@
 
 \chapter{Literature Survey}
 
-To the best of our knowledge, no existing work tackles smoke, specular highlights, and noise in a joint setting. We will cover these three and some related problem separately. First, we will look into specular highlights removal in laparoscopy images, which is mostly tackled as inpainting problem using some form of averaging. Inpainting is a process in filling in missing information, usually using true information in the surroundings. Then, we will cover dehazing, which is haze removal in outdoor images and bears similarity with desmoking in laparoscopy images. This will be followed with desmoking itself. We will not cover denoising as an independent domain.
+To the best of our knowledge, no existing work tackles smoke, specular highlights, and noise in a joint setting. We will cover these three and some related problem separately. First, we will look into specular highlights removal in laparoscopy images, which is mostly tackled as inpainting problem using some form of averaging. Inpainting is a process of filling in missing information, usually using true information in the surroundings. Then, we will cover dehazing, which is haze removal in outdoor images and bears similarity with desmoking in laparoscopy images. This will be followed with desmoking itself. We will not cover denoising as an independent domain.
 
 \section{Speckle removal in laparoscopy images}
 Arnold et al.\cite{arnold2010speckle} use a 2-step inpainting process. In the first step, they fill in the missing data with the centroid of available data in the local surroundings and perform strong smoothing using a Gaussian kernel. The smooth image output of the first step and the original image is combined using a weight mask in the second step. The weight mask has high weights near the speckles and decays non-linearly with distance. This results in a gradual transition between original image and the smooth median filtered image. The results however, are smooth and lack texture. This is expected because median filtering is not suitable to interpolate texture.
@@ -25,7 +25,7 @@ He et al. \cite{he2011dark} observe a statistical property that most local patch
 
 
 \section{Desmoking in laparoscopy images}
-Kotwal et al. \cite{kotwal2016joint} use MRFs to model the image and smoke transmission map and perform joint optimization for smoke and noise removal. They penalized distance between the empirical distribution and template distribution of image intensities and combine it with Huber penalty in local patches to create a prior on the uncorrupted image. Spatial smoothness prior is used on transmission map.
+Kotwal et al. \cite{kotwal2016joint} use MRFs to model the image and smoke transmission map and perform joint optimization for smoke and noise removal. They penalize distance between the empirical distribution and template distribution of image intensities and combine it with Huber penalty in local patches to create a prior on the uncorrupted image. Spatial smoothness prior is used on transmission map.
 
 
 
